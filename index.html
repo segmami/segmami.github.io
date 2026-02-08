@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Asmaa</title>
+  <meta name="description" content="Portfolio GitHub — projets Web & IA/Data" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="logo" href="#top">Asmaa</a>
+        <div class="nav-links">
+          <a href="#projets">Projets</a>
+          <a href="#competences">Compétences</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+
+      <section class="hero" id="top">
+        <h1>Étudiante en IA / Data & Web</h1>
+        <p class="subtitle">
+          Je construis des projets concrets et je les documente sur GitHub.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#projets">Voir mes projets</a>
+          <a class="btn" href="https://github.com/segmami" target="_blank" rel="noreferrer">
+            Mon GitHub
+          </a>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="projets" class="section">
+      <h2>Projets</h2>
+
+      <div class="grid">
+        <article class="card">
+          <h3>📚 Biblio Manager Pro</h3>
+          <p>
+            Application web de gestion de livres : ajout, recherche, suppression (UI simple).
+          </p>
+          <ul class="tags">
+            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>GitHub</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn small" href="https://github.com/segmami/biblio-manager-pro" target="_blank" rel="noreferrer">
+              Code (GitHub)
+            </a>
+            <a class="btn small ghost" href="#" target="_blank" rel="noreferrer">
+              Démo (option)
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>🔥 Calories Burn Detection</h3>
+          <p>
+            Projet IA / Data : estimation des calories brûlées à partir de données d’activité.
+          </p>
+          <ul class="tags">
+            <li>Python</li><li>Data</li><li>Modèle</li><li>Évaluation</li>
+          </ul>
+          <div class="card-actions">
+            <a class="btn small" href="https://github.com/segmami/CALORIES" target="_blank" rel="noreferrer">
+              Code (GitHub)
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="competences" class="section">
+      <h2>Compétences</h2>
+      <div class="two-cols">
+        <div class="panel">
+          <h3>IA / Data</h3>
+          <ul>
+            <li>Préparation et nettoyage de données</li>
+            <li>Entraînement / test de modèles</li>
+            <li>Analyse et interprétation des résultats</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Web & Outils</h3>
+          <ul>
+            <li>HTML / CSS / JavaScript</li>
+            <li>Git & GitHub (issues, branches, PR, commits)</li>
+            <li>Organisation de projet + README</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>Contact</h2>
+      <p>
+        💼 LinkedIn : <a href="#" target="_blank" rel="noreferrer">https://www.linkedin.com</a><br />
+        🧑‍💻 GitHub : <a href="https://github.com/segmami" target="_blank" rel="noreferrer">github.com/segmami</a>
+      </p>
+    </section>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> Asmaa — Portfolio</p>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
