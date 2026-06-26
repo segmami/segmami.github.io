@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheet — Métriques de Classification ML</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f5ff;
+    --card: #ffffff;
+    --border: #e0e0da;
+    --text: #2a1a4d;
+    --muted: #6b5b95;
+    --accent: #7c3aed;
+    --accent-soft: #ede9fe;
+    --green: #16a34a;
+    --green-soft: #dcfce7;
+    --red: #dc2626;
+    --red-soft: #fee2e2;
+    --orange: #d97706;
+    --orange-soft: #fef3c7;
+    --code-bg: #111827;
+    --code-text: #e5e7eb;
+    --code-comment: #6b7280;
+    --code-keyword: #a78bfa;
+    --code-string: #a78bfa;
+    --code-func: #f9a8d4;
+    --code-num: #fb923c;
+  }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 20px;
+  }
+
+  header {
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 12px;
+  }
+
+  header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; }
+  header p  { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+
+  .card.span-2 { grid-column: span 2; }
+  .card.span-3 { grid-column: span 3; }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 5px;
+    overflow: hidden;
+    font-size: 15px;
+    margin-top: 8px;
+  }
+
+  .code-label {
+    background: #1f2937;
+    color: #9ca3af;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-bottom: 1px solid #374151;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--code-text);
+    padding: 12px 14px;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+
+  .kw { color: var(--code-keyword); }
+  .fn { color: var(--code-func); }
+  .st { color: var(--code-string); }
+  .cm { color: var(--code-comment); font-style: italic; }
+  .nu { color: var(--code-num); }
+  .cl { color: #a78bfa; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+  thead th {
+    background: #f1f1ee;
+    font-weight: 700;
+    text-align: left;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  tbody td { padding: 6px 8px; border: 1px solid var(--border); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: #fafaf8; }
+
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .tag-tp { background: var(--green-soft);  color: var(--green); }
+  .tag-tn { background: var(--accent-soft); color: var(--accent); }
+  .tag-fp { background: var(--orange-soft); color: var(--orange); }
+  .tag-fn { background: var(--red-soft);    color: var(--red); }
+
+  .cm-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr 1fr;
+    gap: 3px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .cm-label-top {
+    font-weight: 700; font-size: 13px; text-align: center;
+    color: var(--muted); padding: 4px; text-transform: uppercase;
+    letter-spacing: 0.05em; background: #f1f1ee;
+    border: 1px solid var(--border); border-radius: 4px;
+  }
+
+  .cm-label-side {
+    font-weight: 700; font-size: 13px; color: var(--muted);
+    padding: 4px 6px; text-transform: uppercase; letter-spacing: 0.05em;
+    display: flex; align-items: center;
+    background: #f1f1ee; border: 1px solid var(--border); border-radius: 4px;
+  }
+
+  .cm-cell {
+    border-radius: 5px; border: 1px solid var(--border);
+    padding: 10px 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; gap: 2px;
+  }
+
+  .cm-cell .val  { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; line-height: 1; }
+  .cm-cell .lbl  { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  .cm-cell .desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .cell-tp { background: var(--green-soft); }
+  .cell-tp .val, .cell-tp .lbl { color: var(--green); }
+  .cell-tn { background: var(--accent-soft); }
+  .cell-tn .val, .cell-tn .lbl { color: var(--accent); }
+  .cell-fp { background: var(--orange-soft); }
+  .cell-fp .val, .cell-fp .lbl { color: var(--orange); }
+  .cell-fn { background: var(--red-soft); }
+  .cell-fn .val, .cell-fn .lbl { color: var(--red); }
+
+  .formula-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+  .formula-box {
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 8px 12px; flex: 1; min-width: 130px;
+  }
+
+  .formula-box .f-title   { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+  .formula-box .f-formula { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .formula-box .f-calc    { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+  .formula-box .f-result  { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; margin-top: 5px; }
+
+  .f-accuracy .f-result { color: var(--green); }
+  .f-precision .f-result { color: var(--orange); }
+  .f-recall .f-result { color: var(--red); }
+  .f-f1 .f-result { color: var(--accent); }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 13px; font-weight: 600; }
+  .badge-good { background: var(--green-soft);  color: var(--green); }
+  .badge-bad  { background: var(--red-soft);    color: var(--red); }
+  .badge-warn { background: var(--orange-soft); color: var(--orange); }
+  .badge-ok   { background: var(--accent-soft); color: var(--accent); }
+
+  .tip-block { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+
+  .tip {
+    border-left: 3px solid var(--border);
+    padding: 7px 11px; font-size: 14px;
+    border-radius: 0 4px 4px 0; background: #fafaf8;
+  }
+  .tip.tip-prec { border-color: var(--orange); }
+  .tip.tip-rec  { border-color: var(--red); }
+  .tip.tip-acc  { border-color: var(--green); }
+  .tip.tip-warn { border-color: var(--red); background: #fff5f5; }
+
+  .tip strong { font-weight: 700; }
+  .tip em { color: var(--muted); font-style: normal; font-size: 13px; display: block; margin-top: 2px; }
+
+  .scale-bar {
+    margin-top: 8px; height: 14px; border-radius: 4px;
+    background: linear-gradient(90deg, #fee2e2 0%, #fef9c3 50%, #dcfce7 100%);
+    border: 1px solid var(--border);
+  }
+  .scale-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  .warning-box {
+    margin-top: 8px;
+    background: #fff5f5;
+    border: 1px solid #fca5a5;
+    border-radius: 5px;
+    padding: 9px 13px;
+    font-size: 14px;
+  }
+  .warning-box .w-title { font-weight: 700; color: var(--red); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Metriques de Classification ML</h1>
+  <p>sklearn.metrics — confusion_matrix / accuracy / precision / recall / f1 — Exemple : detection maladie (100 patients, TP=5, FP=3, FN=5, TN=87)</p>
+</header>
+
+<div class="grid">
+
+  <!-- IMPORTS -->
+  <div class="card">
+    <div class="card-title">Imports</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+    <span class="fn">accuracy_score</span>,
+    <span class="fn">confusion_matrix</span>,
+    <span class="fn">precision_score</span>,
+    <span class="fn">recall_score</span>,
+    <span class="fn">f1_score</span>
+)
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt</pre>
+    </div>
+  </div>
+
+  <!-- MATRICE VISUELLE -->
+  <div class="card span-2">
+    <div class="card-title">Matrice de Confusion — Exemple : detection maladie (100 patients)</div>
+    <div class="cm-grid">
+      <div></div>
+      <div class="cm-label-top">Predit : Malade</div>
+      <div class="cm-label-top">Predit : Non malade</div>
+      <div class="cm-label-side">Reellement Malade</div>
+      <div class="cm-cell cell-tp">
+        <span class="val">5</span>
+        <span class="lbl">TP</span>
+        <span class="desc">Vrai positif</span>
+      </div>
+      <div class="cm-cell cell-fn">
+        <span class="val">5</span>
+        <span class="lbl">FN</span>
+        <span class="desc">Faux negatif</span>
+      </div>
+      <div class="cm-label-side">Reellement Non malade</div>
+      <div class="cm-cell cell-fp">
+        <span class="val">3</span>
+        <span class="lbl">FP</span>
+        <span class="desc">Faux positif</span>
+      </div>
+      <div class="cm-cell cell-tn">
+        <span class="val">87</span>
+        <span class="lbl">TN</span>
+        <span class="desc">Vrai negatif</span>
+      </div>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:14px;">
+      <span><span class="tag tag-tp">TP</span> Malade detecte comme malade</span>
+      <span><span class="tag tag-fn">FN</span> Malade predit non malade</span>
+      <span><span class="tag tag-fp">FP</span> Non malade predit malade</span>
+      <span><span class="tag tag-tn">TN</span> Non malade detecte comme non malade</span>
+    </div>
+  </div>
+
+  <!-- CODE MATRICE -->
+  <div class="card span-2">
+    <div class="card-title">Affichage de la Matrice de Confusion</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre>cm = <span class="fn">confusion_matrix</span>(y_test, y_pred)
+<span class="fn">print</span>(cm)
+
+sns.<span class="fn">heatmap</span>(cm,
+           annot=<span class="cl">True</span>,   <span class="cm"># afficher les valeurs dans les cellules</span>
+           fmt=<span class="st">'d'</span>,       <span class="cm"># format entier</span>
+           cmap=<span class="st">'Blues'</span>)  <span class="cm"># palette de couleur</span>
+
+plt.<span class="fn">xlabel</span>(<span class="st">"Predictions"</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">"Valeurs reelles"</span>)
+plt.<span class="fn">title</span>(<span class="st">"Matrice de confusion"</span>)
+plt.<span class="fn">show</span>()</pre>
+    </div>
+  </div>
+
+  <!-- ECHELLE -->
+  <div class="card">
+    <div class="card-title">Echelle de Valeur</div>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:6px;">Toutes les metriques retournent une valeur entre <span class="mono">0.0</span> et <span class="mono">1.0</span>.</p>
+    <div class="scale-bar"></div>
+    <div class="scale-labels">
+      <span>0 — mauvais</span>
+      <span>0.5</span>
+      <span>1 — parfait</span>
+    </div>
+    <table style="margin-top:10px;">
+      <thead>
+        <tr><th>Valeur</th><th>Interpretation generale</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge badge-good">Proche de 1</span></td><td>Meilleur resultat <em style="color:var(--muted); font-size:13px;">— sauf si classes desequilibrees</em></td></tr>
+        <tr><td><span class="badge badge-bad">Proche de 0</span></td><td>Moins bon resultat</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box" style="margin-top:8px;">
+      <div class="w-title">Exception : Accuracy trompeuse</div>
+      Classes desequilibrees : 95% negatif / 5% positif<br>
+      Predire toujours "non malade" donne Accuracy = <strong>0.95</strong> mais Recall = <strong>0.00</strong><br>
+      <span style="font-size:13px; color:var(--muted);">Le modele ne detecte rien, pourtant l'accuracy est excellente.</span>
+    </div>
+  </div>
+
+  <!-- FORMULES -->
+  <div class="card span-3">
+    <div class="card-title">Formules — Calcul avec l'exemple maladie (TP=5, FP=3, FN=5, TN=87, total=100)</div>
+    <div class="formula-row">
+      <div class="formula-box f-accuracy">
+        <div class="f-title">Accuracy</div>
+        <div class="f-formula">(TP + TN) / total</div>
+        <div class="f-calc">(5 + 87) / 100 = 92/100</div>
+        <div class="f-result">= 0.92 (92%)</div>
+      </div>
+      <div class="formula-box f-precision">
+        <div class="f-title">Precision</div>
+        <div class="f-formula">TP / (TP + FP)</div>
+        <div class="f-calc">5 / (5 + 3) = 5/8</div>
+        <div class="f-result">= 0.625 (62,5%)</div>
+      </div>
+      <div class="formula-box f-recall">
+        <div class="f-title">Recall (Rappel)</div>
+        <div class="f-formula">TP / (TP + FN)</div>
+        <div class="f-calc">5 / (5 + 5) = 5/10</div>
+        <div class="f-result">= 0.50 (50%)</div>
+      </div>
+      <div class="formula-box f-f1">
+        <div class="f-title">F1-Score</div>
+        <div class="f-formula">2 * (P * R) / (P + R)</div>
+        <div class="f-calc">2*(0.625*0.5)/(0.625+0.5)</div>
+        <div class="f-result">= 0.556 (55,6%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE CALCUL -->
+  <div class="card span-2">
+    <div class="card-title">Calcul des Metriques</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre><span class="cm"># Accuracy : % bonnes predictions globales</span>
+<span class="fn">print</span>(<span class="st">"Accuracy  :"</span>, <span class="fn">accuracy_score</span>(y_test, y_pred))   <span class="cm"># 0.92</span>
+
+<span class="cm"># Precision : parmi pred positifs, combien sont vrais</span>
+<span class="fn">print</span>(<span class="st">"Precision :"</span>, <span class="fn">precision_score</span>(y_test, y_pred)) <span class="cm"># 0.625</span>
+
+<span class="cm"># Recall : parmi vrais positifs, combien detectes</span>
+<span class="fn">print</span>(<span class="st">"Recall    :"</span>, <span class="fn">recall_score</span>(y_test, y_pred))    <span class="cm"># 0.50</span>
+
+<span class="cm"># F1-score : equilibre entre precision et recall</span>
+<span class="fn">print</span>(<span class="st">"F1-Score  :"</span>, <span class="fn">f1_score</span>(y_test, y_pred))        <span class="cm"># 0.556</span></pre>
+    </div>
+  </div>
+
+  <!-- RESUME METRIQUES -->
+  <div class="card">
+    <div class="card-title">Resume des Metriques</div>
+    <table>
+      <thead>
+        <tr><th>Metrique</th><th>Question posee</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Accuracy</strong></td><td>% bonnes predictions globales</td></tr>
+        <tr><td><strong>Precision</strong></td><td>Parmi pred positifs, combien sont vrais ?</td></tr>
+        <tr><td><strong>Recall</strong></td><td>Parmi vrais positifs, combien detectes ?</td></tr>
+        <tr><td><strong>F1-Score</strong></td><td>Equilibre precision / recall</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EXEMPLE COMPLET COHERENT -->
+  <div class="card span-3">
+    <div class="card-title">Exemple complet — Interpretation des resultats (meme exemple : TP=5, FP=3, FN=5, TN=87)</div>
+    <table>
+      <thead>
+        <tr><th>Metrique</th><th>Valeur calculee</th><th>Resultat</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Accuracy</strong></td>
+          <td><span class="mono">0.92 (92%)</span></td>
+          <td><span class="badge badge-good">Bon en apparence</span></td>
+          <td>92% des predictions sont correctes — mais trompeuse car seulement 10 malades sur 100</td>
+        </tr>
+        <tr>
+          <td><strong>Precision</strong></td>
+          <td><span class="mono">0.625 (62,5%)</span></td>
+          <td><span class="badge badge-warn">Moyen</span></td>
+          <td>Parmi les personnes predites malades, 62,5% sont reellement malades — 37,5% sont de faux positifs</td>
+        </tr>
+        <tr>
+          <td><strong>Recall</strong></td>
+          <td><span class="mono">0.50 (50%)</span></td>
+          <td><span class="badge badge-bad">Problematique</span></td>
+          <td>Le modele rate 50% des vrais malades — 5 malades sur 10 passent inapercus</td>
+        </tr>
+        <tr>
+          <td><strong>F1-Score</strong></td>
+          <td><span class="mono">0.556 (55,6%)</span></td>
+          <td><span class="badge badge-bad">Faible</span></td>
+          <td>Equilibre precision/recall revele la vraie faiblesse du modele malgre l'accuracy de 92%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px; font-size:13px; color:var(--red); font-weight:600;">
+      Accuracy = 92% mais F1 = 55,6% et Recall = 50% — preuve qu'une bonne accuracy masque de mauvaises performances. Toujours verifier Recall et F1 en plus de l'Accuracy.
+    </p>
+  </div>
+
+  <!-- PRECISION QUAND UTILISER -->
+  <div class="card">
+    <div class="card-title">Precision — Quand utiliser</div>
+    <p style="font-size:14px; margin-bottom:6px;"><strong>Utiliser quand les FP sont graves.</strong></p>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:8px;">Parmi les personnes predites malades, combien sont vraiment malades ?</p>
+    <div class="tip-block">
+      <div class="tip tip-prec">
+        <strong>Spam</strong> — email normal marque spam = perte d'un message important.
+        <em>FP couteux : mieux vaut laisser passer un spam que bloquer un vrai email.</em>
+      </div>
+      <div class="tip tip-prec">
+        <strong>Test medical</strong> — dire "malade" a une personne saine = stress, examens inutiles.
+        <em>FP couteux : l'erreur a un impact meme si la personne est saine.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECALL QUAND UTILISER -->
+  <div class="card">
+    <div class="card-title">Recall — Quand utiliser</div>
+    <p style="font-size:14px; margin-bottom:6px;"><strong>Utiliser quand les FN sont graves.</strong></p>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:8px;">Parmi les vrais malades, combien le modele a reussi a detecter ?</p>
+    <div class="tip-block">
+      <div class="tip tip-rec">
+        <strong>Cancer</strong> — manquer un malade retarde le traitement.
+        <em>FN couteux : ne pas detecter un cas positif est grave.</em>
+      </div>
+      <div class="tip tip-rec">
+        <strong>Anti-fraude</strong> — laisser passer une fraude entraine des pertes d'argent.
+        <em>FN couteux : chaque faux negatif = une fraude non detectee.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCURACY QUAND UTILISER -->
+  <div class="card">
+    <div class="card-title">Accuracy — Quand utiliser</div>
+    <p style="font-size:14px; margin-bottom:6px;"><strong>Uniquement si les classes sont equilibrees.</strong></p>
+    <div class="tip-block">
+      <div class="tip tip-acc">
+        <strong>Classes equilibrees</strong> — meme nombre de positifs et negatifs.
+        <em>L'accuracy reflecte bien la performance globale du modele.</em>
+      </div>
+      <div class="tip tip-warn">
+        <strong>Classes desequilibrees</strong> — 95 non malades / 5 malades :<br>
+        Predire toujours "non malade" → Accuracy = <strong>0.95</strong> mais Recall = <strong>0.00</strong> (TP=0, FN=5, TN=95, FP=0)<br>
+        Le modele ne detecte aucun malade, pourtant son accuracy semble excellente.
+        <em>Preferer Recall ou F1 dans ce cas.</em>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
