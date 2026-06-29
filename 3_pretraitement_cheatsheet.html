@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prétraitement · Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#0a1628;--dark:#0f2044;--mid:#1e3a6e;--accent:#2563eb;--soft:#60a5fa;
+    --light:#dbeafe;--pale:#eff6ff;--white:#fff;--gold:#bfdbfe;--code-bg:#060e1f;--code-border:#1e3560;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;background:var(--pale);font-family:'Space Grotesk',sans-serif;color:var(--deep)}
+
+  .sheet{width:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--pale)}
+
+  header{background:linear-gradient(135deg,var(--deep) 0%,var(--mid) 55%,var(--accent) 100%);
+    padding:0 14px;display:flex;align-items:center;height:54px;position:relative;overflow:hidden;flex:0 0 auto}
+  header::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse at 70% 50%,rgba(96,165,250,0.15) 0%,transparent 70%)}
+  header h1{font-size:27px;font-weight:800;color:var(--white);letter-spacing:-1px;line-height:1;position:relative}
+  header h1 span{color:var(--soft)}
+
+  .page{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:min-content;gap:5px;padding:5px}
+  .span2{grid-column:span 2}.span3{grid-column:span 3}.span4{grid-column:span 4}
+
+  .card{background:var(--white);border-radius:8px;overflow:hidden;border:1.5px solid var(--light);display:flex;flex-direction:column}
+  .card-head{padding:4px 10px;display:flex;align-items:center;border-bottom:1.5px solid var(--light);
+    background:linear-gradient(90deg,var(--pale) 0%,#dbeafe 100%);flex-shrink:0}
+  .card-title{font-size:9.5px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;color:var(--mid)}
+
+  .card-body{padding:6px 8px;display:flex;flex-direction:column;gap:5px}
+  .grid2{padding:6px 8px;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .grid2col{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+  .col{display:flex;flex-direction:column;gap:5px}
+
+  .block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:5px;overflow:hidden}
+  .block-label{background:var(--dark);color:var(--gold);font-size:8px;font-weight:700;letter-spacing:0.6px;
+    text-transform:uppercase;padding:2px 9px;border-bottom:1px solid var(--code-border)}
+  pre{font-family:'JetBrains Mono',monospace;font-size:9px;line-height:1.45;padding:5px 8px;color:#cde4ff;overflow:hidden}
+
+  .kw{color:#60a5fa;font-weight:700}.fn{color:#38bdf8}.st{color:#86efac}.cm{color:#4a6080;font-style:italic;font-size:8px}
+  .nm{color:#fcd34d}.op{color:#c4b5fd}.bi{color:#a5f3fc}
+
+  .info{background:#07111f;border:1px solid var(--code-border);border-left:3px solid var(--accent);border-radius:5px;
+    padding:5px 9px;font-size:9px;line-height:1.45;color:var(--gold)}
+  .info strong{display:block;font-size:8px;font-weight:700;letter-spacing:0.7px;text-transform:uppercase;color:var(--soft);margin-bottom:2px}
+  .info ul{padding-left:12px;margin:0}
+  .info li{font-size:8.5px}
+
+  footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px;
+    background:#1c1c1c;border-top:1px solid var(--light);flex:0 0 auto}
+  footer .li-icon{width:18px;height:18px;background:#0a66c2;border-radius:4px;display:inline-flex;
+    align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;flex-shrink:0}
+  footer .li-text{color:#f3f4f6;font-size:12px;font-weight:600}
+  footer .li-text b{color:#fff;font-weight:800}
+
+  @media(max-width:900px){.page{grid-template-columns:repeat(2,1fr)}.span2,.span3,.span4{grid-column:span 2}}
+  @media(max-width:560px){.page{grid-template-columns:repeat(2,1fr)}.span2,.span3,.span4{grid-column:span 2}
+    .grid2,.grid2col{grid-template-columns:1fr}}
+  @media(max-width:420px){.page{grid-template-columns:1fr}.span2,.span3,.span4{grid-column:span 1}
+    pre{font-size:10px}}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+<header>
+  <h1>Pré<span>traitement</span></h1>
+</header>
+
+<div class="page">
+
+  <!-- CHARGER & EXPLORER -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Charger &amp; Explorer</span></div>
+    <div class="grid2">
+      <div class="col">
+        <div class="block">
+          <div class="block-label">Chargement</div>
+          <pre><span class="bi">df</span> <span class="op">=</span> <span class="fn">pd.read_csv</span>(<span class="st">'data.csv'</span>)
+<span class="bi">df</span> <span class="op">=</span> <span class="fn">pd.read_excel</span>(<span class="st">'data.xlsx'</span>)</pre>
+        </div>
+        <div class="info">
+          <strong>À vérifier</strong>
+          Types · Dimensions · Manquantes · Doublons · Stats
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-label">Exploration</div>
+        <pre><span class="bi">df</span>.<span class="fn">head</span>()             <span class="cm"># 5 1res lignes</span>
+<span class="bi">df</span>.<span class="fn">info</span>()             <span class="cm"># types + nulls</span>
+<span class="bi">df</span>.<span class="fn">describe</span>()         <span class="cm"># stats num.</span>
+<span class="bi">df</span>.<span class="fn">dtypes</span>           <span class="cm"># type / colonne</span>
+<span class="bi">df</span>.<span class="fn">shape</span>            <span class="cm"># (lignes, cols)</span>
+<span class="bi">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>()   <span class="cm"># manquantes</span>
+<span class="bi">df</span>.<span class="fn">duplicated</span>().<span class="fn">sum</span>()<span class="cm"># doublons</span>
+<span class="bi">df</span>.<span class="fn">nunique</span>()         <span class="cm"># uniques</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISUALISATION -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Visualisation</span></div>
+    <div class="grid2">
+      <div class="block">
+        <div class="block-label">Pandas</div>
+        <pre><span class="bi">df</span>.<span class="fn">hist</span>(figsize<span class="op">=</span>(<span class="nm">10</span>,<span class="nm">6</span>))    <span class="cm"># distrib.</span>
+<span class="bi">df</span>.<span class="fn">boxplot</span>(figsize<span class="op">=</span>(<span class="nm">10</span>,<span class="nm">6</span>)) <span class="cm"># outliers</span></pre>
+      </div>
+      <div class="block">
+        <div class="block-label">Seaborn</div>
+        <pre><span class="fn">sns.histplot</span>(<span class="bi">df</span>[<span class="st">'col'</span>])
+<span class="fn">sns.boxplot</span>(data<span class="op">=</span><span class="bi">df</span>)
+<span class="fn">sns.heatmap</span>(<span class="bi">df</span>.<span class="fn">corr</span>(),
+  annot<span class="op">=</span><span class="kw">True</span>, cmap<span class="op">=</span><span class="st">'coolwarm'</span>)
+<span class="fn">sns.pairplot</span>(<span class="bi">df</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLIT -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Split Train / Test</span></div>
+    <div class="grid2">
+      <div class="col">
+        <div class="block">
+          <div class="block-label">Séparation X / y</div>
+          <pre><span class="bi">X</span> <span class="op">=</span> <span class="bi">df</span>.<span class="fn">drop</span>(columns<span class="op">=</span>[<span class="st">'target'</span>])
+<span class="bi">y</span> <span class="op">=</span> <span class="bi">df</span>[<span class="st">'target'</span>]</pre>
+        </div>
+        <div class="info">
+          <strong>Règle d'or</strong>
+          Splitter AVANT imputer, encoder et scaler.
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-label">train_test_split</div>
+        <pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> \
+  <span class="fn">train_test_split</span>
+X_tr, X_te, y_tr, y_te <span class="op">=</span> \
+  <span class="fn">train_test_split</span>(
+    <span class="bi">X</span>, <span class="bi">y</span>,
+    test_size<span class="op">=</span><span class="nm">0.2</span>,
+    random_state<span class="op">=</span><span class="nm">42</span>,
+    stratify<span class="op">=</span><span class="bi">y</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALEURS MANQUANTES -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Valeurs Manquantes</span></div>
+    <div class="grid2">
+      <div class="block">
+        <div class="block-label">fillna</div>
+        <pre><span class="bi">df</span>.<span class="fn">fillna</span>(<span class="nm">0</span>)                 <span class="cm"># constante</span>
+<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">fillna</span>(<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">mean</span>())   <span class="cm"># moyenne</span>
+<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">fillna</span>(<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">median</span>()) <span class="cm"># médiane</span>
+<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">fillna</span>(<span class="bi">df</span>[<span class="st">'c'</span>].<span class="fn">mode</span>()[<span class="nm">0</span>])<span class="cm"># mode</span>
+<span class="bi">df</span>.<span class="fn">ffill</span>()  <span class="cm"># avant</span>  <span class="bi">df</span>.<span class="fn">bfill</span>() <span class="cm"># après</span></pre>
+      </div>
+      <div class="col">
+        <div class="block">
+          <div class="block-label">dropna</div>
+          <pre><span class="bi">df</span>.<span class="fn">dropna</span>()              <span class="cm"># ttes lignes</span>
+<span class="bi">df</span>.<span class="fn">dropna</span>(subset<span class="op">=</span>[<span class="st">'col'</span>])<span class="cm"># col cible</span></pre>
+        </div>
+        <div class="info">
+          <strong>Choisir selon</strong>
+          Num : moy/médiane · Catégoriel : mode · Temporel : ffill/bfill
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTLIERS -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Outliers</span></div>
+    <div class="grid2">
+      <div class="block">
+        <div class="block-label">Méthode IQR</div>
+        <pre>Q1 <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].<span class="fn">quantile</span>(<span class="nm">0.25</span>)
+Q3 <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].<span class="fn">quantile</span>(<span class="nm">0.75</span>)
+IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1
+b_inf <span class="op">=</span> Q1 <span class="op">-</span> <span class="nm">1.5</span><span class="op">*</span>IQR
+b_sup <span class="op">=</span> Q3 <span class="op">+</span> <span class="nm">1.5</span><span class="op">*</span>IQR</pre>
+      </div>
+      <div class="col">
+        <div class="block">
+          <div class="block-label">Traitement</div>
+          <pre><span class="cm"># Capsuler</span>
+<span class="bi">df</span>[<span class="st">'col'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].<span class="fn">clip</span>(
+  lower<span class="op">=</span>b_inf, upper<span class="op">=</span>b_sup)
+<span class="cm"># Supprimer</span>
+<span class="bi">df</span> <span class="op">=</span> <span class="bi">df</span>[(<span class="bi">df</span>[<span class="st">'col'</span>]<span class="op">&gt;=</span>b_inf) <span class="op">&amp;</span>
+     (<span class="bi">df</span>[<span class="st">'col'</span>]<span class="op">&lt;=</span>b_sup)]</pre>
+        </div>
+        <div class="info">
+          <strong>Stratégie</strong>
+          Supprimer si peu nombreux · Capsuler si nombreux
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURE ENGINEERING -->
+  <div class="card span4">
+    <div class="card-head"><span class="card-title">Feature Engineering</span></div>
+    <div class="grid2">
+      <div class="grid2col">
+        <div class="block">
+          <div class="block-label">Nouvelles variables</div>
+          <pre><span class="bi">df</span>[<span class="st">'surface'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'larg'</span>] <span class="op">*</span> <span class="bi">df</span>[<span class="st">'long'</span>]
+<span class="bi">df</span>[<span class="st">'age'</span>] <span class="op">=</span> <span class="nm">2026</span> <span class="op">-</span> <span class="bi">df</span>[<span class="st">'annee_naiss'</span>]
+<span class="bi">df</span>[<span class="st">'log_prix'</span>] <span class="op">=</span> <span class="fn">np.log1p</span>(<span class="bi">df</span>[<span class="st">'prix'</span>])</pre>
+        </div>
+        <div class="block">
+          <div class="block-label">Discrétisation</div>
+          <pre><span class="bi">df</span>[<span class="st">'age_bin'</span>] <span class="op">=</span> <span class="fn">pd.cut</span>(
+  <span class="bi">df</span>[<span class="st">'age'</span>], bins<span class="op">=</span><span class="nm">4</span>, labels<span class="op">=</span><span class="kw">False</span>)
+<span class="bi">df</span>[<span class="st">'p_moy'</span>] <span class="op">=</span> <span class="bi">df</span>.<span class="fn">groupby</span>(<span class="st">'ville'</span>)[<span class="st">'prix'</span>]\
+  .<span class="fn">transform</span>(<span class="st">'mean'</span>)</pre>
+        </div>
+      </div>
+      <div class="grid2col">
+        <div class="block">
+          <div class="block-label">Dates</div>
+          <pre><span class="bi">df</span>[<span class="st">'date'</span>] <span class="op">=</span> <span class="fn">pd.to_datetime</span>(<span class="bi">df</span>[<span class="st">'date'</span>])
+<span class="bi">df</span>[<span class="st">'annee'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'date'</span>].dt.year
+<span class="bi">df</span>[<span class="st">'mois'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'date'</span>].dt.month
+<span class="bi">df</span>[<span class="st">'dow'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'date'</span>].dt.dayofweek</pre>
+        </div>
+        <div class="block">
+          <div class="block-label">Texte</div>
+          <pre><span class="bi">df</span>[[<span class="st">'nom'</span>,<span class="st">'dom'</span>]] <span class="op">=</span> \
+  <span class="bi">df</span>[<span class="st">'email'</span>].<span class="fn">str.split</span>(<span class="st">'@'</span>, expand<span class="op">=</span><span class="kw">True</span>)
+<span class="bi">df</span>[<span class="st">'len'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'text'</span>].str.len()
+<span class="bi">df</span>[<span class="st">'upper'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].str.upper()</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENCODAGE -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Encodage</span></div>
+    <div class="grid2">
+      <div class="col">
+        <div class="block">
+          <div class="block-label">One-Hot   sans ordre</div>
+          <pre><span class="bi">df</span> <span class="op">=</span> <span class="fn">pd.get_dummies</span>(
+  <span class="bi">df</span>, columns<span class="op">=</span>[<span class="st">'col'</span>], drop_first<span class="op">=</span><span class="kw">True</span>)</pre>
+        </div>
+        <div class="block">
+          <div class="block-label">Fréquence &amp; Mapping</div>
+          <pre>freq <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].<span class="fn">value_counts</span>(
+  normalize<span class="op">=</span><span class="kw">True</span>).<span class="fn">to_dict</span>()
+<span class="bi">df</span>[<span class="st">'col_f'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'col'</span>].<span class="fn">map</span>(freq)
+<span class="bi">df</span>[<span class="st">'niv'</span>] <span class="op">=</span> <span class="bi">df</span>[<span class="st">'niv'</span>].<span class="fn">map</span>(
+  {<span class="st">'Bas'</span>:<span class="nm">1</span>,<span class="st">'Moyen'</span>:<span class="nm">2</span>,<span class="st">'Eleve'</span>:<span class="nm">3</span>})</pre>
+        </div>
+      </div>
+      <div class="col">
+        <div class="block">
+          <div class="block-label">Ordinal   avec ordre</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">OrdinalEncoder</span>
+enc <span class="op">=</span> <span class="fn">OrdinalEncoder</span>()
+<span class="bi">df</span>[<span class="st">'col'</span>] <span class="op">=</span> enc.<span class="fn">fit_transform</span>(
+  <span class="bi">df</span>[[<span class="st">'col'</span>]])</pre>
+        </div>
+        <div class="block">
+          <div class="block-label">Label   cible simple</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">LabelEncoder</span>
+le <span class="op">=</span> <span class="fn">LabelEncoder</span>()
+<span class="bi">df</span>[<span class="st">'col'</span>] <span class="op">=</span> le.<span class="fn">fit_transform</span>(<span class="bi">df</span>[<span class="st">'col'</span>])</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCALING -->
+  <div class="card span2">
+    <div class="card-head"><span class="card-title">Scaling</span></div>
+    <div class="grid2">
+      <div class="col">
+        <div class="block">
+          <div class="block-label">StandardScaler   moy=0, std=1</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">StandardScaler</span>
+scaler <span class="op">=</span> <span class="fn">StandardScaler</span>()
+<span class="cm"># KNN, SVM, Régression, PCA</span></pre>
+        </div>
+        <div class="block">
+          <div class="block-label">MinMaxScaler   [0, 1]</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">MinMaxScaler</span>
+scaler <span class="op">=</span> <span class="fn">MinMaxScaler</span>()
+<span class="cm"># Réseaux de neurones</span></pre>
+        </div>
+      </div>
+      <div class="col">
+        <div class="block">
+          <div class="block-label">RobustScaler   médiane &amp; IQR</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">RobustScaler</span>
+scaler <span class="op">=</span> <span class="fn">RobustScaler</span>()
+<span class="cm"># Robuste aux outliers</span></pre>
+        </div>
+        <div class="block">
+          <div class="block-label">Normalizer   norme L2</div>
+          <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> \
+  <span class="fn">Normalizer</span>
+scaler <span class="op">=</span> <span class="fn">Normalizer</span>()
+<span class="cm"># Texte, distances cosinus</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGLE D'OR -->
+  <div class="card span4">
+    <div class="card-head"><span class="card-title">Règle d'Or · Éviter le Data Leakage</span></div>
+    <div class="grid2">
+      <div class="block">
+        <div class="block-label">TRAIN   fit + transform</div>
+        <pre><span class="cm"># Apprend ET transforme</span>
+scaler.<span class="fn">fit</span>(X_train)
+X_train <span class="op">=</span> scaler.<span class="fn">transform</span>(X_train)
+<span class="cm"># Ou en une seule étape</span>
+X_train <span class="op">=</span> scaler.<span class="fn">fit_transform</span>(X_train)</pre>
+      </div>
+      <div class="block">
+        <div class="block-label">TEST   transform uniquement</div>
+        <pre><span class="cm"># Transforme UNIQUEMENT</span>
+<span class="cm"># Jamais fit() sur X_test !</span>
+X_test <span class="op">=</span> scaler.<span class="fn">transform</span>(X_test)
+<span class="cm"># fit() sur X_test = fuite !</span></pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="li-icon">in</span>
+  <span class="li-text"><b>Asmaa Segmami</b></span>
+</footer>
+</div>
+
+</body>
+</html>
