@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheet Métriques ML — Accuracy, précision, rappel, F1 | Asmaa Segmami</title>
+<meta name="description" content="Aide-mémoire des métriques d'évaluation en machine learning : accuracy, précision, rappel (recall), F1-score et lecture des scores de classification. Fiche de référence par Asmaa Segmami.">
+<meta name="keywords" content="métriques machine learning, accuracy, précision, rappel, recall, f1 score, évaluation modèle, metrics classification, scikit-learn metrics, ML metrics">
+<meta name="author" content="Asmaa Segmami">
+<meta name="robots" content="index, follow">
+<meta name="language" content="French">
+<link rel="canonical" href="https://segmami.github.io/4_cheatsheet_ml_metrics.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cheatsheet Métriques ML — Accuracy, précision, rappel, F1 | Asmaa Segmami">
+<meta property="og:description" content="Aide-mémoire des métriques d'évaluation en machine learning : accuracy, précision, rappel (recall), F1-score et lecture des scores de classification. Fiche de référence par Asmaa Segmami.">
+<meta property="og:url" content="https://segmami.github.io/4_cheatsheet_ml_metrics.html">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Asmaa Segmami · IA / Data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cheatsheet Métriques ML — Accuracy, précision, rappel, F1 | Asmaa Segmami">
+<meta name="twitter:description" content="Aide-mémoire des métriques d'évaluation en machine learning : accuracy, précision, rappel (recall), F1-score et lecture des scores de classification. Fiche de référence par Asmaa Segmami.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Cheatsheet Métriques ML — Accuracy, précision, rappel, F1 | Asmaa Segmami",
+  "description": "Aide-mémoire des métriques d'évaluation en machine learning : accuracy, précision, rappel (recall), F1-score et lecture des scores de classification. Fiche de référence par Asmaa Segmami.",
+  "inLanguage": "fr",
+  "url": "https://segmami.github.io/4_cheatsheet_ml_metrics.html",
+  "author": { "@type": "Person", "name": "Asmaa Segmami", "url": "https://segmami.github.io/" },
+  "publisher": { "@type": "Person", "name": "Asmaa Segmami" }
+}
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f8f8f6;--card:#fff;--border:#e0e0da;--text:#1a1a1a;--muted:#6b6b6b;
+    --accent:#2563eb;--accent-soft:#dbeafe;--green:#16a34a;--green-soft:#dcfce7;
+    --red:#dc2626;--red-soft:#fee2e2;--orange:#d97706;--orange-soft:#fef3c7;
+    --code-bg:#111827;--code-text:#e5e7eb;--code-comment:#6b7280;--code-keyword:#60a5fa;
+    --code-string:#34d399;--code-func:#f9a8d4;--code-num:#fb923c;
+  }
+  body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);font-size:11px;line-height:1.4}
+  .sheet{width:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+
+  header{padding:9px 12px;border-bottom:2px solid var(--text);flex:0 0 auto}
+  header h1{font-size:18px;font-weight:700;letter-spacing:-0.4px;text-transform:uppercase}
+  header p{color:var(--muted);font-size:9.5px;margin-top:1px}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:min-content;gap:6px;padding:6px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 9px}
+  .span-2{grid-column:span 2}.span-3{grid-column:span 3}.span-4{grid-column:span 4}
+
+  .card-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);
+    margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+  .code-block{background:var(--code-bg);border-radius:5px;overflow:hidden;font-size:9px;margin-top:5px}
+  .code-label{background:#1f2937;color:#9ca3af;font-family:'JetBrains Mono',monospace;font-size:8px;
+    padding:2px 9px;border-bottom:1px solid #374151;letter-spacing:0.05em;text-transform:uppercase}
+  pre{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--code-text);padding:7px 9px;overflow-x:auto;line-height:1.6}
+  .kw{color:var(--code-keyword)}.fn{color:var(--code-func)}.st{color:var(--code-string)}
+  .cm{color:var(--code-comment);font-style:italic}.nu{color:var(--code-num)}.cl{color:#a78bfa}
+
+  table{width:100%;border-collapse:collapse;font-size:9.5px;margin-top:4px}
+  thead th{background:#f1f1ee;font-weight:700;text-align:left;padding:4px 6px;border:1px solid var(--border);
+    font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted)}
+  tbody td{padding:4px 6px;border:1px solid var(--border);vertical-align:top}
+  tbody tr:nth-child(even) td{background:#fafaf8}
+
+  .tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;font-family:'JetBrains Mono',monospace}
+  .tag-tp{background:var(--green-soft);color:var(--green)}.tag-tn{background:var(--accent-soft);color:var(--accent)}
+  .tag-fp{background:var(--orange-soft);color:var(--orange)}.tag-fn{background:var(--red-soft);color:var(--red)}
+
+  .cm-grid{display:grid;grid-template-columns:88px 1fr 1fr;gap:3px;margin-top:6px;font-size:9px}
+  .cm-label-top{font-weight:700;font-size:8.5px;text-align:center;color:var(--muted);padding:3px;text-transform:uppercase;
+    letter-spacing:0.04em;background:#f1f1ee;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center}
+  .cm-label-side{font-weight:700;font-size:8px;color:var(--muted);padding:3px 4px;text-transform:uppercase;letter-spacing:0.03em;
+    display:flex;align-items:center;background:#f1f1ee;border:1px solid var(--border);border-radius:4px}
+  .cm-cell{border-radius:5px;border:1px solid var(--border);padding:6px 4px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;gap:1px}
+  .cm-cell .val{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;line-height:1}
+  .cm-cell .lbl{font-size:9px;font-weight:700;letter-spacing:0.05em}
+  .cm-cell .desc{font-size:8px;color:var(--muted);margin-top:1px}
+  .cell-tp{background:var(--green-soft)}.cell-tp .val,.cell-tp .lbl{color:var(--green)}
+  .cell-tn{background:var(--accent-soft)}.cell-tn .val,.cell-tn .lbl{color:var(--accent)}
+  .cell-fp{background:var(--orange-soft)}.cell-fp .val,.cell-fp .lbl{color:var(--orange)}
+  .cell-fn{background:var(--red-soft)}.cell-fn .val,.cell-fn .lbl{color:var(--red)}
+
+  .formula-row{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+  .formula-box{border:1px solid var(--border);border-radius:5px;padding:6px 9px;flex:1;min-width:110px}
+  .formula-box .f-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px}
+  .formula-box .f-formula{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--text);margin-bottom:2px}
+  .formula-box .f-calc{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)}
+  .formula-box .f-result{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;margin-top:3px}
+  .f-accuracy .f-result{color:var(--green)}.f-precision .f-result{color:var(--orange)}
+  .f-recall .f-result{color:var(--red)}.f-f1 .f-result{color:var(--accent)}
+
+  .badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600}
+  .badge-good{background:var(--green-soft);color:var(--green)}.badge-bad{background:var(--red-soft);color:var(--red)}
+  .badge-warn{background:var(--orange-soft);color:var(--orange)}.badge-ok{background:var(--accent-soft);color:var(--accent)}
+
+  .tip-block{margin-top:5px;display:flex;flex-direction:column;gap:4px}
+  .tip{border-left:3px solid var(--border);padding:5px 8px;font-size:9.5px;border-radius:0 4px 4px 0;background:#fafaf8;line-height:1.35}
+  .tip.tip-prec{border-color:var(--orange)}.tip.tip-rec{border-color:var(--red)}
+  .tip.tip-acc{border-color:var(--green)}.tip.tip-warn{border-color:var(--red);background:#fff5f5}
+  .tip strong{font-weight:700}.tip em{color:var(--muted);font-style:normal;font-size:8.5px;display:block;margin-top:1px}
+
+  .scale-bar{margin-top:5px;height:11px;border-radius:4px;
+    background:linear-gradient(90deg,#fee2e2 0%,#fef9c3 50%,#dcfce7 100%);border:1px solid var(--border)}
+  .scale-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--muted);margin-top:2px}
+
+  .warning-box{margin-top:5px;background:#fff5f5;border:1px solid #fca5a5;border-radius:5px;padding:6px 10px;font-size:9.5px;line-height:1.4}
+  .warning-box .w-title{font-weight:700;color:var(--red);font-size:9px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px}
+
+  .mono{font-family:'JetBrains Mono',monospace}
+  footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px;background:#1c1c1c;border-top:1px solid var(--accent-soft);flex:0 0 auto}
+  footer .li-icon{width:18px;height:18px;background:#0a66c2;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;flex-shrink:0}
+  footer .li-text{color:#f3f4f6;font-size:12px;font-weight:600}
+  footer .li-text b{color:#fff;font-weight:800}
+
+  @media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}.span-2,.span-3,.span-4{grid-column:span 2}.cm-grid{grid-template-columns:70px 1fr 1fr}}
+  @media(max-width:440px){.grid{grid-template-columns:1fr}.span-2,.span-3,.span-4{grid-column:span 1}}
+
+/* ================= THEME VIOLET UNIFIE ================= */
+:root{
+  --deep:#1e0b3b !important; --dark:#2d1554 !important; --mid:#4a2080 !important;
+  --accent:#7c3aed !important; --accent2:#8b5cf6 !important; --soft:#a78bfa !important;
+  --light:#ede9fe !important; --pale:#f5f3ff !important; --white:#ffffff !important;
+  --gold:#c4b5fd !important; --code-bg:#140830 !important; --code-border:#3d1f72 !important;
+  --code-br:#3d1f72 !important; --border:#e9e4ff !important; --line:#e9e4ff !important;
+  --ink:#2a1a4d !important; --muted:#6b5b95 !important; --text:#2a1a4d !important;
+  /* aliases bleu (pandas / pretraitement / regression) */
+  --navy:#1e0b3b !important; --blue:#7c3aed !important; --blue2:#8b5cf6 !important;
+  --sky:#a78bfa !important; --card:#ffffff !important;
+  /* aliases vert (clustering) */
+  --kw:#c084fc !important; --fn:#a78bfa !important; --st:#c4b5fd !important;
+  --cm:#7c6f9a !important; --nm:#d8b4fe !important; --op:#f0abfc !important; --bi:#c4b5fd !important;
+  --code-text:#e2d9f3 !important;
+  /* aliases metrics */
+  --bg:#f5f3ff !important; --accent-soft:#ede9fe !important;
+  --green:#7c3aed !important; --green-soft:#ede9fe !important;
+  --red:#8b5cf6 !important; --red-soft:#f5f3ff !important;
+  --orange:#6d28d9 !important; --orange-soft:#ede9fe !important;
+  --code-comment:#7c6f9a !important; --code-keyword:#c084fc !important;
+  --code-string:#c4b5fd !important; --code-func:#f0abfc !important; --code-num:#d8b4fe !important;
+  --code-line:#3d1f72 !important;
+  --c-comment:#7c6f9a !important; --c-cmd:#c084fc !important; --c-flag:#d8b4fe !important;
+  --c-str:#c4b5fd !important; --c-arg:#e2d9f3 !important; --c-step:#7c3aed !important;
+}
+
+/* ---- Desactivation du copier-coller ---- */
+*{ -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+
+</style>
+</head>
+<body>
+<div class="sheet">
+<header>
+  <h1>Métriques de Classification ML</h1>
+  <p>sklearn.metrics · confusion_matrix / accuracy / precision / recall / f1 · Exemple : détection maladie (100 patients, TP=5, FP=3, FN=5, TN=87)</p>
+</header>
+
+<div class="grid">
+
+  <!-- IMPORTS -->
+  <div class="card span-2">
+    <div class="card-title">Imports</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+    <span class="fn">accuracy_score</span>, <span class="fn">confusion_matrix</span>,
+    <span class="fn">precision_score</span>, <span class="fn">recall_score</span>, <span class="fn">f1_score</span>)
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt</pre>
+    </div>
+  </div>
+
+  <!-- MATRICE VISUELLE -->
+  <div class="card span-2">
+    <div class="card-title">Matrice de Confusion · détection maladie</div>
+    <div class="cm-grid">
+      <div></div>
+      <div class="cm-label-top">Prédit : Malade</div>
+      <div class="cm-label-top">Prédit : Non malade</div>
+      <div class="cm-label-side">Réel. Malade</div>
+      <div class="cm-cell cell-tp"><span class="val">5</span><span class="lbl">TP</span><span class="desc">Vrai positif</span></div>
+      <div class="cm-cell cell-fn"><span class="val">5</span><span class="lbl">FN</span><span class="desc">Faux négatif</span></div>
+      <div class="cm-label-side">Réel. Non malade</div>
+      <div class="cm-cell cell-fp"><span class="val">3</span><span class="lbl">FP</span><span class="desc">Faux positif</span></div>
+      <div class="cm-cell cell-tn"><span class="val">87</span><span class="lbl">TN</span><span class="desc">Vrai négatif</span></div>
+    </div>
+  </div>
+
+  <!-- CODE MATRICE -->
+  <div class="card span-2">
+    <div class="card-title">Affichage de la Matrice</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre>cm = <span class="fn">confusion_matrix</span>(y_test, y_pred)
+sns.<span class="fn">heatmap</span>(cm, annot=<span class="cl">True</span>, fmt=<span class="st">'d'</span>,
+           cmap=<span class="st">'Blues'</span>)
+plt.<span class="fn">xlabel</span>(<span class="st">"Prédictions"</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">"Valeurs réelles"</span>)
+plt.<span class="fn">show</span>()</pre>
+    </div>
+  </div>
+
+  <!-- CALCUL METRIQUES -->
+  <div class="card span-2">
+    <div class="card-title">Calcul des Métriques</div>
+    <div class="code-block">
+      <div class="code-label">python</div>
+      <pre><span class="cm"># % bonnes prédictions globales</span>
+<span class="fn">accuracy_score</span>(y_test, y_pred)   <span class="cm"># 0.92</span>
+<span class="cm"># parmi pred positifs, combien vrais</span>
+<span class="fn">precision_score</span>(y_test, y_pred)  <span class="cm"># 0.625</span>
+<span class="cm"># parmi vrais positifs, combien détectés</span>
+<span class="fn">recall_score</span>(y_test, y_pred)     <span class="cm"># 0.50</span>
+<span class="cm"># équilibre précision / recall</span>
+<span class="fn">f1_score</span>(y_test, y_pred)         <span class="cm"># 0.556</span></pre>
+    </div>
+  </div>
+
+  <!-- FORMULES -->
+  <div class="card span-4">
+    <div class="card-title">Formules · exemple maladie (TP=5, FP=3, FN=5, TN=87, total=100)</div>
+    <div class="formula-row">
+      <div class="formula-box f-accuracy">
+        <div class="f-title">Accuracy</div>
+        <div class="f-formula">(TP + TN) / total</div>
+        <div class="f-calc">(5 + 87) / 100</div>
+        <div class="f-result">= 0.92 (92%)</div>
+      </div>
+      <div class="formula-box f-precision">
+        <div class="f-title">Precision</div>
+        <div class="f-formula">TP / (TP + FP)</div>
+        <div class="f-calc">5 / (5 + 3) = 5/8</div>
+        <div class="f-result">= 0.625 (62,5%)</div>
+      </div>
+      <div class="formula-box f-recall">
+        <div class="f-title">Recall (Rappel)</div>
+        <div class="f-formula">TP / (TP + FN)</div>
+        <div class="f-calc">5 / (5 + 5) = 5/10</div>
+        <div class="f-result">= 0.50 (50%)</div>
+      </div>
+      <div class="formula-box f-f1">
+        <div class="f-title">F1-Score</div>
+        <div class="f-formula">2·(P·R)/(P+R)</div>
+        <div class="f-calc">2·(0.625·0.5)/(1.125)</div>
+        <div class="f-result">= 0.556 (55,6%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUME + ECHELLE -->
+  <div class="card span-2">
+    <div class="card-title">Résumé des Métriques</div>
+    <table>
+      <thead><tr><th>Métrique</th><th>Question posée</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Accuracy</strong></td><td>% bonnes prédictions globales</td></tr>
+        <tr><td><strong>Precision</strong></td><td>Parmi pred positifs, combien vrais ?</td></tr>
+        <tr><td><strong>Recall</strong></td><td>Parmi vrais positifs, combien détectés ?</td></tr>
+        <tr><td><strong>F1-Score</strong></td><td>Équilibre précision / recall</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card span-2">
+    <div class="card-title">Échelle de Valeur</div>
+    <p style="font-size:9.5px;color:var(--muted)">Toutes les métriques retournent une valeur entre <span class="mono">0.0</span> et <span class="mono">1.0</span>.</p>
+    <div class="scale-bar"></div>
+    <div class="scale-labels"><span>0 · mauvais</span><span>0.5</span><span>1 · parfait</span></div>
+    <div class="warning-box">
+      <div class="w-title">Exception : Accuracy trompeuse</div>
+      Même avec une Accuracy élevée (92%), le modèle peut manquer la moitié des malades (Recall = 50%). Exemple : 100 patients → TP=5, FP=3, FN=5, TN=87. Il semble performant grâce au grand nombre de non-malades bien classés (TN), mais ne détecte que 5 malades sur 10. Si les classes sont déséquilibrées, privilégier le Recall ou le F1-score plutôt que l'Accuracy seule.
+    </div>
+  </div>
+
+  <!-- EXEMPLE COMPLET -->
+  <div class="card span-4">
+    <div class="card-title">Exemple complet · Interprétation (TP=5, FP=3, FN=5, TN=87)</div>
+    <table>
+      <thead><tr><th>Métrique</th><th>Valeur</th><th>Résultat</th><th>Interprétation</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Accuracy</strong></td><td><span class="mono">0.92 (92%)</span></td><td><span class="badge badge-good">Bon en apparence</span></td><td>92% des prédictions correctes, mais trompeuse car seulement 10 malades sur 100</td></tr>
+        <tr><td><strong>Precision</strong></td><td><span class="mono">0.625 (62,5%)</span></td><td><span class="badge badge-warn">Moyen</span></td><td>Parmi les prédits malades, 62,5% le sont vraiment, 37,5% de faux positifs</td></tr>
+        <tr><td><strong>Recall</strong></td><td><span class="mono">0.50 (50%)</span></td><td><span class="badge badge-bad">Problématique</span></td><td>Le modèle rate 50% des vrais malades : 5 sur 10 passent inaperçus</td></tr>
+        <tr><td><strong>F1-Score</strong></td><td><span class="mono">0.556 (55,6%)</span></td><td><span class="badge badge-bad">Faible</span></td><td>L'équilibre précision/recall révèle la vraie faiblesse malgré l'accuracy de 92%</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:6px;font-size:9.5px;color:var(--red);font-weight:600">
+      Accuracy = 92% mais F1 = 55,6% et Recall = 50% : une bonne accuracy masque de mauvaises performances. Toujours vérifier Recall et F1 en plus de l'Accuracy.
+    </p>
+  </div>
+
+  <!-- PRECISION QUAND -->
+  <div class="card span-2">
+    <div class="card-title">Precision · Quand l'utiliser</div>
+    <p style="font-size:9.5px;margin-bottom:3px"><strong>Quand les FP sont graves.</strong></p>
+    <p style="font-size:9.5px;color:var(--muted);margin-bottom:5px">Parmi les prédits malades, combien le sont vraiment ?</p>
+    <div class="tip-block">
+      <div class="tip tip-prec"><strong>Spam</strong> : email normal marqué spam = perte d'un message important.<em>FP coûteux : mieux vaut laisser passer un spam que bloquer un vrai email.</em></div>
+      <div class="tip tip-prec"><strong>Test médical</strong> : dire « malade » à une personne saine = stress, examens inutiles.<em>FP coûteux : l'erreur a un impact même si la personne est saine.</em></div>
+    </div>
+  </div>
+
+  <!-- RECALL QUAND -->
+  <div class="card span-2">
+    <div class="card-title">Recall · Quand l'utiliser</div>
+    <p style="font-size:9.5px;margin-bottom:3px"><strong>Quand les FN sont graves.</strong></p>
+    <p style="font-size:9.5px;color:var(--muted);margin-bottom:5px">Parmi les vrais malades, combien sont détectés ?</p>
+    <div class="tip-block">
+      <div class="tip tip-rec"><strong>Cancer</strong> : manquer un malade retarde le traitement.<em>FN coûteux : ne pas détecter un cas positif est grave.</em></div>
+      <div class="tip tip-rec"><strong>Anti-fraude</strong> : laisser passer une fraude entraîne des pertes.<em>FN coûteux : chaque faux négatif = une fraude non détectée.</em></div>
+    </div>
+  </div>
+
+  <!-- ACCURACY QUAND -->
+  <div class="card span-4">
+    <div class="card-title">Accuracy · Quand l'utiliser</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+      <div class="tip tip-acc"><strong>Classes équilibrées</strong> : même nombre de positifs et négatifs.<em>L'accuracy reflète bien la performance globale du modèle.</em></div>
+      <div class="tip tip-warn"><strong>Classes déséquilibrées</strong> : la classe majoritaire domine le score.<em>Une accuracy élevée peut masquer un mauvais Recall. Préférer Recall ou F1.</em></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="li-icon">in</span>
+  <span class="li-text"><b>Asmaa Segmami</b></span>
+</footer>
+</div>
+
+<script>
+(function(){
+  // Bloque copie, coupe, clic droit, glisser et selection
+  ['copy','cut','contextmenu','dragstart','selectstart'].forEach(function(evt){
+    document.addEventListener(evt, function(e){ e.preventDefault(); }, {capture:true});
+  });
+  // Bloque Ctrl/Cmd + C / X / A / S / U / P
+  document.addEventListener('keydown', function(e){
+    var k = e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey) && ['c','x','a','s','u','p'].indexOf(k)!==-1){
+      e.preventDefault();
+    }
+  }, {capture:true});
+})();
+</script>
+<script>
+(function(){
+  var lastSent = 0;
+  function contentHeight(){
+    // hauteur reelle du contenu, insensible a la taille de la fenetre/iframe
+    var b = document.body;
+    var rect = b.getBoundingClientRect();
+    var h = Math.ceil(rect.height);
+    // fallback si body a une hauteur nulle
+    if(h < 50){ h = b.scrollHeight; }
+    return h;
+  }
+  function sendH(){
+    var h = contentHeight();
+    // n'envoyer que si l'ecart depasse 8px (evite les micro-boucles)
+    if(Math.abs(h - lastSent) < 8) return;
+    lastSent = h;
+    if(window.parent && window.parent!==window){
+      window.parent.postMessage({csHeight:h, src:location.pathname.split('/').pop()}, '*');
+    }
+  }
+  // quelques mesures apres chargement (polices/images), PAS d'ecoute resize
+  window.addEventListener('load', function(){
+    sendH();
+    setTimeout(sendH,300);
+    setTimeout(sendH,900);
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(sendH); }
+  });
+})();
+</script>
+</body>
+</html>

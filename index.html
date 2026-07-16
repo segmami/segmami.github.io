@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asmaa Segmami · Portfolio IA / Data</title>
+<meta name="description" content="Asmaa Segmami, diplômée en intelligence artificielle. Portfolio IA / Data : machine learning, deep learning, analyse et préparation de données, Python, Pandas, Scikit-learn. Fiches de référence Python, Pandas, prétraitement, classification, régression, clustering.">
+<meta name="keywords" content="Asmaa Segmami, intelligence artificielle, machine learning, deep learning, data science, data analyst, Python, Pandas, Scikit-learn, cheatsheet IA, portfolio data, préparation de données, classification, régression, clustering">
+<meta name="author" content="Asmaa Segmami">
+<meta name="robots" content="index, follow">
+<meta name="language" content="French">
+<link rel="canonical" href="https://segmami.github.io/">
+
+<!-- Open Graph (Facebook / LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Asmaa Segmami · Portfolio IA / Data">
+<meta property="og:description" content="Diplômée en intelligence artificielle : machine learning, deep learning et analyse de données. Découvrez mes projets et mes fiches de référence IA / Data.">
+<meta property="og:url" content="https://segmami.github.io/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Asmaa Segmami">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Asmaa Segmami · Portfolio IA / Data">
+<meta name="twitter:description" content="Diplômée en intelligence artificielle : machine learning, deep learning et analyse de données.">
+
+<!-- Donnees structurees (Google) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Asmaa Segmami",
+  "jobTitle": "Ingénieure en intelligence artificielle / Data Scientist",
+  "description": "Diplômée en intelligence artificielle, spécialisée en machine learning, deep learning et analyse de données.",
+  "url": "https://segmami.github.io/",
+  "sameAs": [
+    "https://www.linkedin.com/in/asmaa-segmami/",
+    "https://github.com/segmami"
+  ],
+  "knowsAbout": [
+    "Intelligence artificielle",
+    "Machine Learning",
+    "Deep Learning",
+    "Data Science",
+    "Python",
+    "Pandas",
+    "Scikit-learn"
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep:   #1e0b3b;
+    --dark:   #2d1554;
+    --mid:    #4a2080;
+    --accent: #7c3aed;
+    --accent2:#8b5cf6;
+    --soft:   #a78bfa;
+    --light:  #ede9fe;
+    --pale:   #f5f3ff;
+    --white:  #ffffff;
+    --ink:    #2a1a4d;
+    --muted:  #6b5b95;
+    --code-bg:#140830;
+    --line:   #e9e4ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--pale);
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(167,139,250,0.35) 0%, transparent 55%),
+      linear-gradient(135deg, var(--deep) 0%, var(--mid) 55%, var(--accent) 110%);
+    color: var(--white);
+    padding: 88px 0 76px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 38px 38px;
+    mask-image: radial-gradient(ellipse at 30% 40%, #000 0%, transparent 75%);
+  }
+  .hero-inner { position: relative; z-index: 1; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--soft);
+    border: 1px solid rgba(167,139,250,0.4);
+    border-radius: 999px;
+    padding: 6px 15px;
+    margin-bottom: 26px;
+  }
+  .eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #4ade80;
+    box-shadow: 0 0 0 4px rgba(74,222,128,0.25);
+  }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 74px);
+    font-weight: 800;
+    letter-spacing: -2.5px;
+    line-height: 1.02;
+    margin-bottom: 22px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, #c4b5fd, #f0abfc);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p {
+    font-size: 18px;
+    max-width: 620px;
+    color: #e9defc;
+    margin-bottom: 34px;
+  }
+  .hero p b { color: #fff; font-weight: 600; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 15px;
+    padding: 12px 22px; border-radius: 10px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-main { background: var(--white); color: var(--accent); }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.28); }
+  .btn-ghost { border: 1.5px solid rgba(255,255,255,0.4); color: #fff; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+  /* ---------- SECTION SHELL ---------- */
+  section.block { padding: 72px 0; }
+  .sec-head { margin-bottom: 40px; }
+  .sec-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap:0;
+    margin-bottom: 12px;
+  }
+  .sec-kicker::before { content: none; display: none; }
+  .sec-title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800; letter-spacing: -1px; color: var(--deep);
+  }
+
+  /* ---------- OBJECTIF ---------- */
+  .objectif {
+    background: linear-gradient(135deg, #fff 0%, var(--pale) 100%);
+    border: 1.5px solid var(--line);
+    border-left: 5px solid var(--accent);
+    border-radius: 16px;
+    padding: 34px 36px;
+    font-size: 17px;
+    color: var(--ink);
+    max-width: 820px;
+  }
+  .objectif b { color: var(--accent); font-weight: 700; }
+
+  /* ---------- COMPETENCES ---------- */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .skill-card {
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 24px 26px;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .skill-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 34px rgba(124,58,237,0.13);
+    border-color: var(--soft);
+  }
+  .skill-card h3 {
+    font-size: 17px; font-weight: 800; color: var(--deep);
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .skill-ico {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--accent), var(--soft));
+    color: #fff; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;
+    font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+  }
+  .skill-card ul { list-style: none; }
+  .skill-card li {
+    font-size: 14.5px; color: var(--muted);
+    padding: 5px 0 5px 20px; position: relative;
+  }
+  .skill-card li::before {
+    content: ''; position: absolute; left: 0; top: 13px;
+    width: 7px; height: 7px; border-radius: 2px;
+    background: var(--soft); transform: rotate(45deg);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+  .chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; font-weight: 600;
+    background: var(--light); color: var(--mid);
+    padding: 5px 11px; border-radius: 7px;
+  }
+
+  /* ---------- PROJETS ---------- */
+  .proj { display: flex; flex-direction: column; gap: 20px; }
+  .proj-card {
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    transition: box-shadow .18s ease, transform .18s ease;
+  }
+  .proj-card:hover { box-shadow: 0 18px 40px rgba(124,58,237,0.12); transform: translateY(-3px); }
+  .proj-bar { background: linear-gradient(180deg, var(--accent), var(--soft)); }
+  .proj-body { padding: 28px 32px; }
+  .proj-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  .proj-name { font-size: 22px; font-weight: 800; color: var(--deep); letter-spacing: -0.5px; }
+  .proj-link {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+    color: var(--accent); display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px;
+    transition: background .15s ease;
+  }
+  .proj-link:hover { background: var(--pale); }
+  .proj-desc { font-size: 15.5px; color: var(--ink); margin-bottom: 16px; }
+  .proj-ai {
+    font-size: 14px; color: var(--mid);
+    background: var(--pale); border-radius: 10px; padding: 12px 16px;
+    border: 1px dashed var(--soft);
+  }
+  .proj-ai b { color: var(--accent); }
+
+  /* ---------- CHEATSHEETS GALLERY ---------- */
+  .cs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .cs-card {
+    position: relative;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 22px 20px;
+    overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .cs-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--soft));
+  }
+  .cs-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 38px rgba(124,58,237,0.16);
+    border-color: var(--soft);
+  }
+  .cs-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700; color: var(--soft);
+    letter-spacing: 1px;
+  }
+  .cs-title {
+    font-size: 19px; font-weight: 800; color: var(--deep);
+    margin: 8px 0 6px; letter-spacing: -0.4px;
+  }
+  .cs-tag { font-size: 13.5px; color: var(--muted); margin-bottom: 18px; min-height: 38px; }
+  .cs-open {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+    color: var(--accent); display: inline-flex; align-items: center; gap: 7px;
+  }
+  .cs-open .arr { transition: transform .15s ease; }
+  .cs-card:hover .cs-open .arr { transform: translateX(4px); }
+  .cs-link-abs { position: absolute; inset: 0; }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer {
+    background: linear-gradient(135deg, var(--deep), var(--mid));
+    color: #fff;
+    padding: 64px 0 38px;
+    text-align: center;
+  }
+  footer .sec-kicker { color: var(--soft); justify-content: center; }
+  footer .sec-kicker::before { background: var(--soft); }
+  footer h2 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: -1px; margin-bottom: 28px; }
+  .contact-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 44px; }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 15px;
+    padding: 13px 24px; border-radius: 11px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    transition: background .15s ease, transform .15s ease;
+  }
+  .contact-btn:hover { background: rgba(255,255,255,0.16); transform: translateY(-2px); }
+  .contact-btn .ic {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; flex-shrink: 0;
+  }
+  .ic-li { background: #0a66c2; }
+  .ic-gh { background: #1a1a1a; }
+  .ic-web { background: var(--accent); }
+  .copyr { font-size: 13px; color: #b9a8e0; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 18px; }
+    .hero { padding: 64px 0 56px; }
+    section.block { padding: 54px 0; }
+    .sec-head { margin-bottom: 30px; }
+    .objectif { padding: 26px 24px; font-size: 16px; }
+    .proj-card { grid-template-columns: 6px 1fr; }
+    .proj-body { padding: 22px 22px; }
+    .proj-name { font-size: 20px; }
+    .skills-grid { grid-template-columns: 1fr; gap: 14px; }
+    .cs-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  }
+
+  @media (max-width: 480px) {
+    .wrap { padding: 0 14px; }
+    .hero { padding: 52px 0 46px; }
+    .hero p { font-size: 16px; }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn { justify-content: center; }
+    .cs-grid { grid-template-columns: 1fr; }
+    .proj-body { padding: 20px 18px; }
+    .objectif { padding: 22px 18px; }
+    .contact-row { flex-direction: column; align-items: stretch; }
+    .contact-btn { justify-content: center; }
+  }
+
+/* ---- Desactivation du copier-coller ---- */
+*{ -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+
+/* ---- Barre de navigation collante ---- */
+.topnav{position:sticky;top:0;z-index:1000;
+  background:rgba(30,11,59,0.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(167,139,250,0.35);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:9px 20px;}
+.topnav .brand{font-weight:800;color:#fff;font-size:16px;letter-spacing:-.5px;margin-right:auto;}
+.topnav a{color:#e9defc;font-weight:600;font-size:14px;text-decoration:none;
+  padding:7px 13px;border-radius:8px;transition:background .15s ease;}
+.topnav a:hover{background:rgba(167,139,250,0.22);color:#fff;}
+@media(max-width:560px){.topnav .brand{width:100%;margin-bottom:4px;}}
+
+/* ---- Accordeon cheatsheets (dans la grille, hauteur flexible) ---- */
+.cs-card{cursor:pointer;}
+.cs-card.active{border-color:var(--accent);box-shadow:0 14px 30px rgba(124,58,237,.22);}
+/* la section cheatsheets est plus large pour laisser respirer les fiches */
+#cheatsheets .wrap{max-width:1500px;}
+/* le panneau reste DANS la grille : toute la largeur des colonnes, sans debordement */
+.cs-panel{grid-column:1/-1;display:none;margin-top:14px;
+  border:1.5px solid var(--soft);border-radius:14px;overflow:hidden;
+  background:var(--white);box-shadow:0 12px 30px rgba(124,58,237,.14);}
+.cs-panel.open{display:block;}
+.cs-panel .cs-panel-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 22px;background:linear-gradient(90deg,var(--deep),var(--mid));color:#fff;}
+.cs-panel .cs-panel-bar b{font-size:16px;font-weight:800;}
+.cs-panel .cs-close{cursor:pointer;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:7px 14px;}
+.cs-panel .cs-close:hover{background:rgba(255,255,255,.28);}
+/* hauteur pilotee par JS (auto selon la cheatsheet) */
+.cs-panel iframe{width:100%;height:600px;border:0;display:block;background:#fff;
+  transition:height .25s ease;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <span class="brand">Asmaa Segmami</span>
+  <a href="#top">Accueil</a>
+  <a href="#objectif">Objectif</a>
+  <a href="#competences">Compétences</a>
+  <a href="#projets">Projets</a>
+  <a href="#cheatsheets">Fiches</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+
+<!-- HERO -->
+<span id="top"></span>
+<header class="hero">
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Diplômée en intelligence artificielle</span>
+    <h1>Bonjour, je suis<br><span class="grad">Asmaa Segmami</span></h1>
+    <p>Je transforme les données en décisions concrètes pour les entreprises, grâce au machine learning et à une démarche claire : <b>comprendre le besoin, analyser, modéliser et améliorer.</b></p>
+    <div class="cta-row">
+      <a class="btn btn-main" href="#projets">Voir mes projets →</a>
+      <a class="btn btn-ghost" href="#cheatsheets">Mes cheatsheets</a>
+    </div>
+  </div>
+</header>
+
+<!-- OBJECTIF -->
+<section class="block" id="objectif">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Objectif</div>
+      <h2 class="sec-title">Ce que je cherche à construire</h2>
+    </div>
+    <div class="objectif">
+      Diplômée en <b>intelligence artificielle</b> (mention grande distinction), passionnée par le
+      machine learning et la valorisation des données. Je souhaite accompagner les entreprises dans
+      la <b>structuration, l'analyse et l'exploitation de leurs données</b> afin d'améliorer la prise
+      de décision, optimiser les performances et développer des solutions intelligentes basées sur l'IA.
+      À la recherche d'une première opportunité pour mettre en pratique mes compétences en
+      <b>Python, machine learning, deep learning et analyse de données</b>.
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCES -->
+<section class="block" id="competences" style="background:linear-gradient(180deg,#fff,var(--pale));">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Compétences</div>
+      <h2 class="sec-title">Mon terrain de jeu technique</h2>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <h3><span class="skill-ico">IA</span>Intelligence artificielle</h3>
+        <ul>
+          <li>Machine Learning : régression, classification, clustering</li>
+          <li>Deep Learning : réseaux de neurones (bases)</li>
+          <li>NLP : analyse de texte, extraction d'informations</li>
+          <li>Évaluation : métriques, validation, amélioration</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <h3><span class="skill-ico">D</span>Data</h3>
+        <ul>
+          <li>Préparation et nettoyage de données</li>
+          <li>Analyse exploratoire et visualisation</li>
+          <li>Entraînement et évaluation de modèles</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <h3><span class="skill-ico">W</span>Développement web</h3>
+        <ul>
+          <li>Conception d'applications web intégrant l'IA</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <h3><span class="skill-ico">T</span>Outils</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Langages</p>
+        <div class="chips"><span class="chip">Python</span><span class="chip">SQL</span></div>
+        <p style="font-size:14px;color:var(--muted);margin:14px 0 10px;">IA / Data</p>
+        <div class="chips"><span class="chip">Pandas</span><span class="chip">NumPy</span><span class="chip">Scikit-learn</span><span class="chip">Matplotlib</span></div>
+        <p style="font-size:14px;color:var(--muted);margin:14px 0 10px;">Environnements & versioning</p>
+        <div class="chips"><span class="chip">Jupyter</span><span class="chip">Colab</span><span class="chip">VS Code</span><span class="chip">Git/GitHub</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJETS -->
+<section class="block" id="projets">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Projets</div>
+      <h2 class="sec-title">Ce que j'ai construit</h2>
+    </div>
+    <div class="proj">
+
+      <div class="proj-card">
+        <div class="proj-bar"></div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <span class="proj-name">ProfMatchAI</span>
+            <a class="proj-link" href="https://github.com/YvanJaures/ProfMatchAI" target="_blank" rel="noopener">↗ GitHub</a>
+          </div>
+          <p class="proj-desc">
+            Plateforme intelligente d'affectation des professeurs aux cours. ProfMatchAI automatise
+            et optimise le processus de recrutement : un algorithme de scoring calcule les compatibilités
+            entre professeurs et cours, et l'IA analyse les CV, enrichit les profils et génère des
+            justifications en langage naturel pour aider le service RH dans ses décisions.
+          </p>
+          <div class="proj-ai"><b>IA mobilisée :</b> scoring de compatibilité, analyse de CV (NLP), génération de texte explicatif.</div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-bar"></div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <span class="proj-name">Calories Burn Detection</span>
+            <span class="proj-link" style="color:var(--muted);">IA / Data</span>
+          </div>
+          <p class="proj-desc">
+            Estimation des calories brûlées à partir de données d'activité.
+          </p>
+          <div class="proj-ai"><b>IA mobilisée :</b> préparation de données, modèle de régression, évaluation des prédictions.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CHEATSHEETS -->
+<section class="block" id="cheatsheets" style="background:linear-gradient(180deg,#fff,var(--pale));">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">Ressources</div>
+      <h2 class="sec-title">Fiches de référence &amp; ressources</h2>
+      <p style="color:var(--muted);font-size:16px;margin-top:10px;max-width:640px;">
+        Des fiches de référence que j'ai créées pendant mon parcours, du langage Python jusqu'aux
+        modèles de machine learning. Clique pour ouvrir.
+      </p>
+    </div>
+    <div class="cs-grid">
+
+      <div class="cs-card" data-i="0" onclick="toggleCS(0)">
+        <div class="cs-num">01</div>
+        <div class="cs-title">Python</div>
+        <div class="cs-tag">Variables, conditions, boucles, fonctions, fichiers.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="1" onclick="toggleCS(1)">
+        <div class="cs-num">02</div>
+        <div class="cs-title">Pandas</div>
+        <div class="cs-tag">Manipulation de données : DataFrames, filtrage, agrégations.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="2" onclick="toggleCS(2)">
+        <div class="cs-num">03</div>
+        <div class="cs-title">Prétraitement</div>
+        <div class="cs-tag">Nettoyage, valeurs manquantes, encodage, scaling, split.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="3" onclick="toggleCS(3)">
+        <div class="cs-num">04</div>
+        <div class="cs-title">Classification</div>
+        <div class="cs-tag">Modèles, matrice de confusion, choix d'algorithme.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="4" onclick="toggleCS(4)">
+        <div class="cs-num">05</div>
+        <div class="cs-title">Métriques ML</div>
+        <div class="cs-tag">Accuracy, précision, rappel, F1 et lecture des scores.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="5" onclick="toggleCS(5)">
+        <div class="cs-num">06</div>
+        <div class="cs-title">Régression</div>
+        <div class="cs-tag">Modèles de régression, métriques d'erreur, évaluation.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="6" onclick="toggleCS(6)">
+        <div class="cs-num">07</div>
+        <div class="cs-title">Clustering</div>
+        <div class="cs-tag">K-Means, DBSCAN, hiérarchique, silhouette.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-card" data-i="7" onclick="toggleCS(7)">
+        <div class="cs-num">08</div>
+        <div class="cs-title">Git / GitHub</div>
+        <div class="cs-tag">Workflows individuel & équipe, branches, pull requests.</div>
+        <span class="cs-open">Afficher <span class="arr">↓</span></span>
+      </div>
+
+      <div class="cs-panel" id="csPanel">
+        <div class="cs-panel-bar"><b id="csPanelTitle"></b>
+          <button class="cs-close" onclick="closeCS()">✕ Fermer</button></div>
+        <iframe id="csFrame" src="" title="cheatsheet"></iframe>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="sec-kicker">Contact</div>
+    <h2>Travaillons ensemble</h2>
+    <div class="contact-row">
+      <a class="contact-btn" href="https://www.linkedin.com/in/asmaa-segmami/" target="_blank" rel="noopener">
+        <span class="ic ic-li">in</span> LinkedIn
+      </a>
+    </div>
+    <div class="copyr">© 2026 Asmaa Segmami · IA / Data</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  ['copy','cut','contextmenu','dragstart','selectstart'].forEach(function(evt){
+    document.addEventListener(evt, function(e){ e.preventDefault(); }, {capture:true});
+  });
+  document.addEventListener('keydown', function(e){
+    var k = e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey) && ['c','x','a','s','u','p'].indexOf(k)!==-1){
+      e.preventDefault();
+    }
+  }, {capture:true});
+})();
+</script>
+<script>
+var CS = [['1_python_cheatsheet.html', 'Python'], ['2_pandas_cheatsheet.html', 'Pandas'], ['3_pretraitement_cheatsheet.html', 'Prétraitement'], ['4_classification_cheatsheet.html', 'Classification'], ['4_cheatsheet_ml_metrics.html', 'Métriques ML'], ['5_regression_cheatsheet.html', 'Régression'], ['6_clustering_cheatsheet.html', 'Clustering'], ['0_git-workflows.html', 'Git / GitHub']];
+var current = -1;
+var currentFile = '';
+
+function toggleCS(i){
+  if(current === i){ closeCS(); return; }
+  current = i;
+  document.querySelectorAll('.cs-card').forEach(function(c){c.classList.remove('active');});
+  var card = document.querySelector('.cs-card[data-i="'+i+'"]');
+  if(card) card.classList.add('active');
+  var panel = document.getElementById('csPanel');
+  var frame = document.getElementById('csFrame');
+  currentFile = CS[i][0];
+  document.getElementById('csPanelTitle').textContent = CS[i][1];
+  frame.style.height = '600px';           // hauteur provisoire le temps du chargement
+  frame.src = currentFile;
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function closeCS(){
+  current = -1; currentFile = '';
+  document.getElementById('csPanel').classList.remove('open');
+  document.getElementById('csFrame').src = '';
+  document.querySelectorAll('.cs-card').forEach(function(c){c.classList.remove('active');});
+}
+
+// Reception de la hauteur reelle de la cheatsheet -> hauteur flexible
+window.addEventListener('message', function(e){
+  var d = e.data;
+  if(d && d.csHeight){
+    var frame = document.getElementById('csFrame');
+    // on n'ajuste que si le message vient bien de la cheatsheet affichee
+    if(currentFile && (!d.src || currentFile.indexOf(d.src) !== -1 || d.src.indexOf(currentFile) !== -1)){
+      var target = d.csHeight;
+      var actuel = parseInt(frame.style.height, 10) || 0;
+      // n'ajuste que si l'ecart depasse 8px -> stoppe toute boucle
+      if(Math.abs(target - actuel) > 8){
+        frame.style.height = target + 'px';
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://segmami.github.io/sitemap.xml
