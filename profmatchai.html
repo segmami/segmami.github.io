@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProfMatchAI · Architecture Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --teal:    #028090;
+  --teal-l:  #E6F7F8;
+  --teal-m:  #B2E4E8;
+  --navy:    #065A82;
+  --accent:  #02C39A;
+  --acc-l:   #E6FAF5;
+  --dark:    #021B2C;
+  --gray1:   #F7FAFB;
+  --gray2:   #E2EEF4;
+  --gray3:   #64748B;
+  --white:   #FFFFFF;
+  --red:     #C0392B;
+  --red-l:   #FEE8E8;
+  --orange:  #E67E22;
+  --ora-l:   #FEF3E8;
+  --purple:  #6B21A8;
+  --pur-l:   #F3E8FF;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #F0F6F8;
+  color: var(--dark);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* ── HEADER ───────────────────────────────────────── */
+header {
+  background: var(--dark);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 3px solid var(--accent);
+}
+.h-left h1 { font-size: 25px; font-weight: 700; color: var(--white); }
+.h-left h1 span { color: var(--accent); }
+.h-left p { font-size: 14px; color: #7BB8CC; margin-top: 2px; max-width: 420px; line-height: 1.4; }
+.h-badge { background: var(--accent); color: var(--dark); font-size: 14px; font-weight: 700; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+.h-tagline { font-size: 14px; color: #A8D4E8; font-style: italic; border-left: 2px solid var(--accent); padding-left: 8px; }
+
+/* ── GRILLE ───────────────────────────────────────── */
+.page { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.row { display: grid; gap: 10px; }
+.row-4  { grid-template-columns: repeat(4, 1fr); }
+.row-3  { grid-template-columns: repeat(3, 1fr); }
+.row-32 { grid-template-columns: 3fr 2fr; }
+.row-23 { grid-template-columns: 2fr 3fr; }
+.row-2  { grid-template-columns: 1fr 1fr; }
+
+/* ── CARTE ────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--gray2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--gray2);
+}
+.card-icon {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+.card-sub   { font-size: 14px; color: var(--gray3); margin-top: 1px; }
+.card-body  { padding: 11px 14px; }
+
+/* ── LISTE ────────────────────────────────────────── */
+ul.lst { list-style: none; }
+ul.lst li {
+  font-size: 15px; padding: 3px 0;
+  display: flex; align-items: flex-start; gap: 5px;
+  color: var(--dark); line-height: 1.4;
+}
+ul.lst li::before {
+  content: ''; width: 4px; height: 4px;
+  border-radius: 50%; background: var(--accent);
+  margin-top: 5px; flex-shrink: 0;
+}
+
+/* ── TAG ──────────────────────────────────────────── */
+.tag {
+  display: inline-block; font-size: 14px; font-weight: 600;
+  padding: 2px 7px; border-radius: 4px; margin: 2px 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.t-blue   { background: #E8F4F8; color: var(--navy); }
+.t-green  { background: var(--acc-l); color: #1A7A4A; }
+.t-red    { background: var(--red-l); color: var(--red); }
+.t-purple { background: var(--pur-l); color: var(--purple); }
+.t-orange { background: var(--ora-l); color: var(--orange); }
+.t-dark   { background: var(--dark); color: var(--accent); }
+.t-teal   { background: var(--teal-l); color: var(--teal); }
+
+/* ── TABLE ────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th { background: var(--navy); color: var(--white); padding: 5px 8px; text-align: left; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--gray2); color: var(--dark); vertical-align: top; font-size: 14px; }
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: var(--gray1); }
+td code { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--navy); }
+
+/* ── PIPELINE STEPS ───────────────────────────────── */
+.pipe-row {
+  display: flex; align-items: stretch; gap: 0;
+  border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--gray2);
+}
+.pipe-step {
+  flex: 1; background: var(--acc-l); padding: 8px 6px;
+  text-align: center; position: relative; font-size: 14px;
+  font-weight: 600; color: var(--teal);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+}
+.pipe-step:not(:last-child)::after {
+  content: '';
+  position: absolute; right: -6px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 6px solid var(--teal-m);
+  z-index: 1;
+}
+.pipe-step sub { font-size: 14px; font-weight: 400; color: var(--gray3); }
+
+/* ── FALLBACK ─────────────────────────────────────── */
+.fallback { display: flex; flex-direction: column; gap: 5px; }
+.fb { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 15px; font-weight: 600; }
+.fb1 { background: var(--acc-l); color: #1A7A4A; }
+.fb2 { background: var(--ora-l); color: var(--orange); }
+.fb3 { background: var(--red-l); color: var(--red); }
+.fb-num { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.fb1 .fb-num { background: #1A7A4A; color: white; }
+.fb2 .fb-num { background: var(--orange); color: white; }
+.fb3 .fb-num { background: var(--red); color: white; }
+
+/* ── NIVEAU SECURITE ──────────────────────────────── */
+.niv { background: var(--gray1); border: 1px solid var(--gray2); border-radius: 6px; padding: 7px 10px; margin: 4px 0; font-size: 15px; }
+.niv-label { font-size: 14px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+/* ── SECTION LABEL ────────────────────────────────── */
+.section-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: #5A8A9A;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.section-label::before,
+.section-label::after { content: ''; flex: 1; height: 1px; background: #C8DDE5; }
+
+/* ── ROLE BLOCKS ──────────────────────────────────── */
+.role-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.role-item { background: var(--acc-l); border-radius: 7px; padding: 8px 10px; }
+.role-name { font-size: 14px; font-weight: 700; color: var(--teal); margin-bottom: 3px; }
+.role-desc { font-size: 14px; color: var(--gray3); line-height: 1.4; }
+
+/* ── FORMULE ──────────────────────────────────────── */
+.formula {
+  background: var(--dark); border-radius: 6px; padding: 9px 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 15px;
+  color: var(--white); text-align: center; margin: 6px 0;
+}
+.formula .acc { color: var(--accent); font-weight: 700; }
+.formula .op  { color: #7BB8CC; }
+
+/* ── EQUIPE ───────────────────────────────────────── */
+.team-ia  { color: var(--red); }
+.team-dev { color: var(--teal); }
+.team-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.team-block { background: var(--gray1); border-radius: 6px; padding: 7px 10px; }
+.team-role { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.team-names { font-size: 15px; color: var(--dark); line-height: 1.5; }
+
+/* ── FOOTER ───────────────────────────────────────── */
+footer {
+  background: var(--dark); border-top: 1px solid #1A3A4A;
+  padding: 10px 20px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 6px;
+}
+footer p { font-size: 14px; color: #5A7A8A; }
+footer a { color: var(--accent); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+.small { font-size: 14px; color: var(--gray3); margin-top: 4px; }
+.bold { font-weight: 700; }
+.teal { color: var(--teal); }
+.divider { height: 1px; background: var(--gray2); margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-left">
+    <h1>Prof<span>Match</span>AI</h1>
+    <p>Application web intelligente pour la gestion des CV et l'affectation automatique des professeurs aux cours, avec verification humaine finale.</p>
+  </div>
+  <div class="h-tagline">L'IA assiste · le RH decide</div>
+  <div class="h-badge">1er Prix · Defi Informatique La Cite 2026</div>
+</header>
+
+<div class="page">
+
+  <!-- ROW 1 : STACK -->
+  <div class="section-label">Stack Technique</div>
+
+  <div class="row row-4">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:#E8F4F8">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#065A82" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div><div class="card-title teal">Frontend</div><div class="card-sub">localhost:3000</div></div>
+      </div>
+      <div class="card-body">
+        <ul class="lst">
+          <li>Next.js 16 · React 19</li>
+          <li>TypeScript · Tailwind CSS</li>
+          <li>Vitest · SSE EventSource</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:#E8F8F0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A7A4A" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div><div class="card-title teal">Backend</div><div class="card-sub">localhost:5000</div></div>
+      </div>
+      <div class="card-body">
+        <ul class="lst">
+          <li>Express 5 · Prisma + SQLite</li>
+          <li>Redis · JWT · SSE middleware</li>
+          <li>CVController · AssignController</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:#FEE8E8">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div><div class="card-title teal">Module IA</div><div class="card-sub">localhost:8000</div></div>
+      </div>
+      <div class="card-body">
+        <ul class="lst">
+          <li>FastAPI · Ollama llama3.2:3b</li>
+          <li>ChromaDB · sentence-transformers</li>
+          <li>KMeans · Pydantic · tenacity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:var(--teal-l)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#028090" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        </div>
+        <div><div class="card-title teal">LLM · Parametres</div><div class="card-sub">Configuration</div></div>
+      </div>
+      <div class="card-body">
+        <ul class="lst">
+          <li>Temperature <span class="mono">0.1</span> · evite hallucinations</li>
+          <li>Retry API x3 · Ollama x2 · tenacity</li>
+          <li>Few-shot + CoT + Negative + Hardening</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2 : PIPELINE -->
+  <div class="section-label">Pipeline IA · 3 Piliers</div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="pipe-row">
+        <div class="pipe-step">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          CV Upload<br><sub>PDF / DOCX</sub>
+        </div>
+        <div class="pipe-step">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          LLM + Ollama<br><sub>Extraction</sub>
+        </div>
+        <div class="pipe-step">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          RAG ChromaDB<br><sub>Similarite 0-100</sub>
+        </div>
+        <div class="pipe-step">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          KMeans<br><sub>Clustering</sub>
+        </div>
+        <div class="pipe-step" style="background:var(--acc-l);color:#1A7A4A">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          Score + Justif.<br><sub>Resultat final</sub>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3 : SECURITE + FALLBACK + ROLES -->
+  <div class="row row-3">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:var(--red-l)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="card-title teal">Securite Anti-Injection</div>
+      </div>
+      <div class="card-body">
+        <div class="niv"><div class="niv-label">Niv. 01</div>20 patterns suspects + nettoyage <span class="mono">\x00</span></div>
+        <div class="niv"><div class="niv-label">Niv. 02</div>Prompt hardening + delimiteurs DEBUT/FIN CV rigides</div>
+        <div class="niv"><div class="niv-label">Niv. 03</div>Validation Pydantic + schema JSON strict <span class="mono">extra=forbid</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:var(--teal-l)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#028090" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="card-title teal">Roles Utilisateurs</div>
+      </div>
+      <div class="card-body">
+        <div class="role-3" style="grid-template-columns:1fr;">
+          <div class="role-item"><div class="role-name">Professeur</div><div class="role-desc">Soumet CV, consulte affectations</div></div>
+          <div class="role-item"><div class="role-name">RH</div><div class="role-desc">Lance affectations, ajuste resultats</div></div>
+          <div class="role-item"><div class="role-name">Admin</div><div class="role-desc">Gere users, parametres, config</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:var(--acc-l)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#028090" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="card-title teal">Triple Fallback LLM</div>
+      </div>
+      <div class="card-body">
+        <div class="fallback">
+          <div class="fb fb1"><div class="fb-num">01</div>API distante (cloud) · ~8s · 90%</div>
+          <div class="fb fb2"><div class="fb-num">02</div>Ollama local · llama3.2:3b · 2-4 min</div>
+          <div class="fb fb3"><div class="fb-num">03</div>Parseur statique · prof corrige</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 4 : KMEANS -->
+  <div class="section-label">KMeans · Clustering</div>
+
+  <div class="row row-4" style="grid-template-columns:1fr">
+
+
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:#E8F8F0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1A7A4A" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </div>
+        <div><div class="card-title teal">KMeans · Clustering</div></div>
+      </div>
+      <div class="card-body">
+        <ul class="lst">
+          <li><span class="bold">Regroupement automatique</span> des profils similaires par domaine de competence</li>
+          <li><span class="bold">Similarite cosinus</span> sur embeddings <span class="mono">all-MiniLM</span> · score normalise 0-100</li>
+          <li><span class="bold">Affectation optimisee</span> selon cluster + score de compatibilite</li>
+        </ul>
+        <div style="margin-top:6px">
+          <span class="tag t-blue">Web/Backend</span>
+          <span class="tag t-green">IA/ML</span>
+          <span class="tag t-orange">DevOps</span>
+          <span class="tag t-purple">BD/Data</span>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <!-- ROW 5 : EQUIPE -->
+  <div class="section-label">Equipe</div>
+
+  <div class="row row-4" style="grid-template-columns:1fr">
+
+
+
+
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:var(--pur-l)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B21A8" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="card-title teal">Equipe</div>
+      </div>
+      <div class="card-body">
+        <div class="team-row">
+          <div class="team-block">
+            <div class="team-role team-ia">Equipe IA</div>
+            <div class="team-names">Segmami Asmaa<br>Franklin Gameni Toumani</div>
+          </div>
+          <div class="team-block">
+            <div class="team-role team-dev">Equipe Dev</div>
+            <div class="team-names">Yvan Jaures Nzali<br>Louis Stephane Zohou</div>
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <span class="tag t-dark">Jira</span>
+          <span class="tag t-dark">Agile</span>
+          <span class="tag t-dark">3 semaines</span>
+          <span class="tag t-dark">25 US</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <p>ProfMatchAI · 1er Prix Defi Informatique La Cite 2026</p>
+    <p style="margin-top:2px;color:#7BB8CC">Segmami Asmaa · Franklin Gameni Toumani · Yvan Jaures Nzali · Louis Stephane Zohou</p>
+  </div>
+  <a href="https://github.com/YvanJaures/ProfMatchAI" target="_blank">github.com/YvanJaures/ProfMatchAI</a>
+</footer>
+
+</body>
+</html>
