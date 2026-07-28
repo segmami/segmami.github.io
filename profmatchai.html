@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ProfMatchAI : application web intelligente pour la gestion des CV et l'affectation automatique des professeurs aux cours, avec verification humaine finale.">
+<meta name="keywords" content="ProfMatchAI, IA, affectation, professeurs, LLM, KMeans, RAG, ChromaDB, Ollama, FastAPI, Next.js, La Cite">
+<meta property="og:title" content="ProfMatchAI · Architecture">
+<meta property="og:description" content="Application web intelligente pour la gestion des CV et l'affectation automatique des professeurs aux cours, avec verification humaine finale.">
+<meta property="og:type" content="website">
+<title>ProfMatchAI · Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#ffffff;--bg-c:#faf8fd;--bd:#e6ddf3;
+ --tx:#241a35;--tx2:#6f6285;
+ --vio:#7c3aed;--vio-l:#f0ebff;
+ --ros:#d6459b;--ros-l:#fce8f4;
+ --blu:#4f7fe0;--blu-l:#eaf0fc;
+ --grn:#2fa565;--grn-l:#e6f7ee;
+ --amb:#c98a1a;--amb-l:#fdf3e0;
+ --r:13px;
+}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tx);font-size:0.9rem;line-height:1.5}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+/* HEADER */
+header{background:var(--tx);border-bottom:2px solid var(--vio);padding:12px 0}
+.h-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:1.3rem;font-weight:700;color:#fff;letter-spacing:-0.5px}
+.logo span{color:#a78bfa}
+.h-badge{background:var(--vio);color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap}
+/* HERO */
+.hero{padding:14px 0 6px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.hero-title{font-size:3.2rem;font-weight:700;color:var(--tx);line-height:1.05;letter-spacing:-1px}
+.hero-title span{color:var(--vio)}
+.hero-sub{font-size:0.95rem;color:var(--tx2);margin-top:10px;line-height:1.6}
+.hero-tag{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--vio);font-weight:600;border-left:3px solid var(--vio);padding-left:10px}
+/* SECTION */
+section{padding:12px 0 4px}
+.sec-title{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sec-title::before,.sec-title::after{content:'';flex:1;height:1.5px;background:var(--bd)}
+.sec-title h2{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx);white-space:nowrap}
+/* GRILLES */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g1{display:grid;grid-template-columns:1fr;gap:12px}
+/* CARTE */
+.card{background:var(--bg-c);border:1.5px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.card-h{padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd)}
+.card-lbl{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--tx2)}
+.card-ttl{font-size:1.75rem;font-weight:700;color:var(--tx);line-height:1.1;letter-spacing:-0.3px}
+.card-ttl.vio{color:var(--vio)} .card-ttl.blu{color:var(--blu)} .card-ttl.ros{color:var(--ros)} .card-ttl.grn{color:var(--grn)} .card-ttl.amb{color:var(--amb)}
+.card-b{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card-sub{font-size:0.82rem;color:var(--tx2)}
+ul.lst{list-style:none}
+ul.lst li{font-size:0.88rem;padding:2px 0;display:flex;align-items:flex-start;gap:5px;color:var(--tx);line-height:1.4}
+ul.lst li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--vio);margin-top:6px;flex-shrink:0}
+.mono-box{background:var(--bg);border:1px solid var(--bd);border-radius:7px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--tx);line-height:1.6}
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;padding:3px 9px;border-radius:5px}
+.t-vio{background:var(--vio-l);color:var(--vio)}
+.t-blu{background:var(--blu-l);color:var(--blu)}
+.t-ros{background:var(--ros-l);color:var(--ros)}
+.t-grn{background:var(--grn-l);color:var(--grn)}
+.t-amb{background:var(--amb-l);color:var(--amb)}
+.t-dark{background:var(--tx);color:#a78bfa}
+/* PIPELINE */
+.pipe{display:flex;align-items:stretch}
+.pipe-c{flex:1;background:var(--bg-c);border:1.5px solid var(--bd);border-left:none;padding:22px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.pipe-c:first-child{border-left:1.5px solid var(--bd);border-radius:var(--r) 0 0 var(--r)}
+.pipe-c:last-child{border-radius:0 var(--r) var(--r) 0;background:var(--grn-l);border-color:var(--grn)}
+.pipe-num{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--vio);background:var(--vio-l);padding:2px 8px;border-radius:4px}
+.pipe-c:last-child .pipe-num{color:var(--grn);background:var(--grn-l)}
+.pipe-name{font-size:1.25rem;font-weight:700;color:var(--tx)}
+.pipe-c:last-child .pipe-name{color:var(--grn)}
+.pipe-sub{font-size:0.95rem;color:var(--tx2)}
+.pipe-arr{display:flex;align-items:center;padding:0 4px;color:var(--vio);font-size:1.4rem;font-weight:700;background:var(--bg-c);border-top:1.5px solid var(--bd);border-bottom:1.5px solid var(--bd)}
+/* FALLBACK */
+.fbs{display:flex;flex-direction:column;gap:6px}
+.fb{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:0.88rem;font-weight:600}
+.fb1{background:var(--grn-l);color:var(--grn)} .fb2{background:var(--amb-l);color:var(--amb)} .fb3{background:var(--ros-l);color:var(--ros)}
+.fb-n{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;flex-shrink:0}
+.fb1 .fb-n{background:var(--grn);color:#fff} .fb2 .fb-n{background:var(--amb);color:#fff} .fb3 .fb-n{background:var(--ros);color:#fff}
+/* NIVEAUX */
+.nivs{display:flex;flex-direction:column;gap:6px}
+.niv{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px;display:flex;gap:10px;align-items:flex-start}
+.niv-b{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--vio);background:var(--vio-l);padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.niv-t{font-size:0.88rem;color:var(--tx);line-height:1.4}
+code{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--vio);background:var(--vio-l);padding:1px 5px;border-radius:4px}
+/* ROLES */
+.roles{display:flex;flex-direction:column;gap:6px}
+.role{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px}
+.role-n{font-size:0.85rem;font-weight:700;color:var(--vio);margin-bottom:2px}
+.role-d{font-size:0.82rem;color:var(--tx2);line-height:1.4}
+/* EQUIPE */
+.team-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.team-b{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px}
+.team-r{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.team-r.ia{color:var(--vio)} .team-r.dev{color:var(--blu)}
+.team-ns{font-size:0.88rem;color:var(--tx);line-height:1.8}
+/* FOOTER */
+footer{background:var(--bg-c);border-top:1.5px solid var(--bd);padding:14px 0;margin-top:16px}
+.foot-in{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer p{font-size:0.8rem;color:var(--tx2);line-height:1.5}
+footer strong{color:var(--tx);font-weight:700}
+footer a{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--vio);text-decoration:none}
+footer a:hover{text-decoration:underline}
+/* RESPONSIVE */
+@media(max-width:1024px){
+ .g4{grid-template-columns:repeat(2,1fr)}
+ .hero{grid-template-columns:1fr;gap:20px}
+ .hero-title{font-size:2.4rem}
+}
+@media(max-width:768px){
+ .g4,.g3,.g2{grid-template-columns:1fr}
+ .pipe{flex-direction:column}
+ .pipe-c{border-left:1.5px solid var(--bd)!important;border-radius:var(--r)!important;margin-top:4px}
+ .pipe-arr{display:none}
+ .team-g{grid-template-columns:1fr}
+ .hero-title{font-size:2rem}
+}
+@media(max-width:480px){
+ .h-inner{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<main>
+<div class="wrap">
+ <div class="hero" style="grid-template-columns:1fr 1fr;max-width:1000px;gap:24px;align-items:center">
+ <div>
+ <h1 class="hero-title">Prof<span>Match</span>AI</h1>
+ <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+ <span style="display:inline-block;background:var(--vio);color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;padding:5px 14px;border-radius:20px">1er Prix · Défi Informatique La Cité 2026</span>
+ <a href="https://github.com/YvanJaures/ProfMatchAI" target="_blank" style="display:inline-block;background:var(--tx);color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none">GitHub</a>
+ </div>
+ </div>
+ <div>
+ <p class="hero-sub">Application web intelligente pour la gestion des CV et l'affectation automatique des professeurs aux cours, avec vérification humaine finale.</p>
+ <p class="hero-tag">L'IA assiste · le RH décide</p>
+ </div>
+ </div>
+ <!-- STACK -->
+ <section id="stack">
+ <div class="sec-title"><h2>Stack Technique</h2></div>
+ <div class="g4">
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">localhost:3000</div>
+ <div class="card-ttl vio">Frontend</div>
+ <ul class="lst">
+ <li>Next.js 16 · React 19</li>
+ <li>TypeScript · Tailwind CSS</li>
+ <li>Vitest · SSE EventSource</li>
+ </ul>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">localhost:5000</div>
+ <div class="card-ttl blu">Backend</div>
+ <ul class="lst">
+ <li>Express 5 · Prisma + SQLite</li>
+ <li>Redis · JWT · SSE middleware</li>
+ <li>CVController · AssignController</li>
+ </ul>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">localhost:8000</div>
+ <div class="card-ttl ros">Module IA</div>
+ <ul class="lst">
+ <li>FastAPI · Ollama llama3.2:3b</li>
+ <li>ChromaDB · sentence-transformers</li>
+ <li>KMeans · Pydantic · tenacity</li>
+ </ul>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">Configuration</div>
+ <div class="card-ttl amb">LLM · Paramètres</div>
+ <ul class="lst">
+ <li>Temperature <code>0.1</code> · évite hallucinations</li>
+ <li>Retry API x3 · Ollama x2 · tenacity</li>
+ <li>Few-shot + CoT + Negative + Hardening</li>
+ </ul>
+ </div>
+ </article>
+ </div>
+ </section>
+ <!-- PIPELINE -->
+ <section id="pipeline">
+ <div class="sec-title"><h2>Pipeline IA · 3 Piliers</h2></div>
+ <div class="pipe">
+ <div class="pipe-c">
+ <div class="pipe-name">CV Upload</div>
+ <div class="pipe-sub">PDF / DOCX</div>
+ </div>
+ <div class="pipe-arr">&#8250;</div>
+ <div class="pipe-c">
+ <div class="pipe-name">LLM + Ollama</div>
+ <div class="pipe-sub">Extraction</div>
+ </div>
+ <div class="pipe-arr">&#8250;</div>
+ <div class="pipe-c">
+ <div class="pipe-name">RAG ChromaDB</div>
+ <div class="pipe-sub">Similarité 0-100</div>
+ </div>
+ <div class="pipe-arr">&#8250;</div>
+ <div class="pipe-c">
+ <div class="pipe-name">KMeans</div>
+ <div class="pipe-sub">Clustering</div>
+ </div>
+ <div class="pipe-arr">&#8250;</div>
+ <div class="pipe-c">
+ <div class="pipe-name">Score + Justif.</div>
+ <div class="pipe-sub">Résultat final</div>
+ </div>
+ </div>
+ </section>
+ <!-- SECURITE + ROLES + FALLBACK -->
+ <section id="securite">
+ <div class="sec-title"><h2>Sécurité · Rôles · Fallback</h2></div>
+ <div class="g3">
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">cv_extractor · cv_analyzer · models.py</div>
+ <div class="card-ttl ros">Sécurité Anti-Injection</div>
+ <div class="nivs">
+ <div class="niv"><div class="niv-b">Niv. 01</div><div class="niv-t">20 patterns suspects + nettoyage <code>\x00</code></div></div>
+ <div class="niv"><div class="niv-b">Niv. 02</div><div class="niv-t">Prompt hardening + délimiteurs DEBUT/FIN CV rigides</div></div>
+ <div class="niv"><div class="niv-b">Niv. 03</div><div class="niv-t">Validation Pydantic + schéma JSON strict <code>extra=forbid</code></div></div>
+ </div>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">3 Dashboards</div>
+ <div class="card-ttl vio">Rôles Utilisateurs</div>
+ <div class="roles">
+ <div class="role"><div class="role-n">Professeur</div><div class="role-d">Soumet CV, consulte affectations</div></div>
+ <div class="role"><div class="role-n">RH</div><div class="role-d">Lance affectations, ajuste résultats</div></div>
+ <div class="role"><div class="role-n">Admin</div><div class="role-d">Gère users, paramètres, config</div></div>
+ </div>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-lbl">Résilience système</div>
+ <div class="card-ttl grn">Triple Fallback LLM</div>
+ <div class="fbs">
+ <div class="fb fb1"><div class="fb-n">01</div>API distante (cloud) · ~8s · 90%</div>
+ <div class="fb fb2"><div class="fb-n">02</div>Ollama local · llama3.2:3b · 2-4 min</div>
+ <div class="fb fb3"><div class="fb-n">03</div>Parseur statique · prof corrige</div>
+ </div>
+ </div>
+ </article>
+ </div>
+ </section>
+ <!-- KMEANS + EQUIPE -->
+ <section id="ia">
+ <div class="sec-title"><h2>KMeans · Clustering &amp; Équipe</h2></div>
+ <div class="g2">
+ <article class="card">
+ <div class="card-b">
+ <div class="card-ttl grn">KMeans · Clustering</div>
+ <ul class="lst">
+ <li><strong>Regroupement automatique</strong> des profils similaires par domaine de compétence</li>
+ <li><strong>Similarité cosinus</strong> sur embeddings <code>all-MiniLM</code> · score normalisé 0-100</li>
+ <li><strong>Affectation optimisée</strong> selon cluster + score de compatibilité</li>
+ </ul>
+ <div class="tags">
+ <span class="tag t-blu">Web/Backend</span>
+ <span class="tag t-vio">IA/ML</span>
+ <span class="tag t-amb">DevOps</span>
+ <span class="tag t-grn">BD/Data</span>
+ </div>
+ </div>
+ </article>
+ <article class="card">
+ <div class="card-b">
+ <div class="card-ttl vio">Équipe</div>
+ <div class="team-g">
+ <div class="team-b">
+ <div class="team-r ia">Équipe IA</div>
+ <div class="team-ns">Segmami Asmaa<br>Franklin Gameni Toumani</div>
+ </div>
+ <div class="team-b">
+ <div class="team-r dev">Équipe Dev</div>
+ <div class="team-ns">Yvan Jaurès Nzali<br>Louis Stéphane Zohou</div>
+ </div>
+ </div>
+ </div>
+ </article>
+ </div>
+ </section>
+</div>
+</main>
+</body>
+</html>
