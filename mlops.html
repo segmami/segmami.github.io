@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheet entretien : projet MLOps</title>
+<meta name="description" content="Fiche de revision entretien : problematique, solution en 4 etapes, resultat et architecture du pipeline MLOps de prediction medicale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;--panel:#faf8fd;--panel2:#f3eefb;--line:#e6ddf3;
+    --ink:#241a35;--muted:#6f6285;
+    --violet:#7c3aed;--violet-soft:#a978f0;--pink:#d6459b;--blue:#4f7fe0;--green:#2fa565;--amber:#c98a1a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;padding:12px 18px;line-height:1.35;max-width:1280px;margin:0 auto;}
+
+  header.hero{border:1px solid var(--line);border-radius:14px;padding:14px 22px;margin-bottom:10px;background:linear-gradient(120deg,#f6f1fe,#efe6fc);}
+  .hero h1{font-size:2.5rem;font-weight:700;letter-spacing:-.03em;color:var(--ink);}
+  .hero h1 span{color:var(--violet);}
+  .hero .tl{color:var(--ink);font-size:.95rem;margin-top:6px;}
+  .hero .tl b{color:var(--violet);font-weight:600;}
+
+  h2.sectlab{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:4px 2px 8px;display:flex;align-items:center;gap:10px;}
+  h2.sectlab::before,h2.sectlab::after{content:"";height:1px;background:var(--line);flex:1;}
+  h2.sectlab b{font-weight:700;color:var(--violet);}
+
+  /* PROBLEMATIQUE */
+  .prob{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--pink);border-radius:12px;padding:16px 20px;}
+  .prob p{font-size:1.02rem;color:var(--ink);}
+  .prob .pb{font-weight:600;color:var(--pink);}
+
+  /* SOLUTION : 4 etapes */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .steps-v{display:flex;flex-direction:column;gap:10px;}
+  .steps-v .step::after{content:"";}
+  .steps-v .step{border-top:none;border-left:3px solid var(--violet);}
+  .steps-v .step.s2{border-left-color:var(--blue);}
+  .steps-v .step.s3{border-left-color:var(--amber);}
+  .steps-v .step.s4{border-left-color:var(--green);}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:11px 15px;position:relative;border-top:3px solid var(--violet);}
+  .step .snum{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--violet);letter-spacing:.1em;}
+  .step .st{font-weight:700;font-size:1.5rem;margin:2px 0 9px;color:var(--violet);}
+  .step ul{list-style:none;}
+  .step li{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);line-height:1.45;padding-left:14px;position:relative;margin-bottom:3px;}
+  .step li::before{content:"-";position:absolute;left:0;color:var(--violet-soft);}
+  .step li b{color:var(--ink);font-weight:600;}
+  .step::after{content:"\2192";position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--violet-soft);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;z-index:2;}
+  .step:nth-child(4n)::after{content:"";}
+  .step.s2{border-top-color:var(--blue);} .step.s2 .snum{color:var(--blue);}
+  .step.s3{border-top-color:var(--amber);} .step.s3 .snum{color:var(--amber);}
+  .step.s4{border-top-color:var(--green);} .step.s4 .snum{color:var(--green);}
+
+  /* PITCH */
+  .pitch{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:12px;}
+  .pitch p{font-size:.96rem;color:var(--ink);margin-bottom:9px;}
+  .pitch p:last-child{margin-bottom:0;}
+  .pitch b{color:var(--violet);font-weight:600;}
+
+  /* RESULTAT */
+  .result{background:linear-gradient(120deg,#f6f1fe,#eafaf1);border:1px solid var(--line);border-radius:12px;padding:16px 20px;text-align:center;}
+  .result p{font-size:1.1rem;font-weight:500;color:var(--ink);}
+
+  /* ARCHI */
+  .archi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;overflow-x:auto;}
+  .archi pre{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--violet);line-height:1.4;white-space:pre;}
+  .archi-modern{display:flex;flex-direction:column;align-items:stretch;gap:0;}
+  .anode{background:#fff;border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:10px;padding:10px 14px;font-weight:700;font-size:1rem;color:var(--ink);text-align:center;}
+  .anode span{display:block;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:400;color:var(--muted);margin-top:3px;}
+  .anode.data{border-left-color:var(--pink);}
+  .anode.train{border-left-color:var(--violet);}
+  .anode.api{border-left-color:var(--blue);background:var(--panel2);}
+  .anode.page{border-left-color:var(--amber);flex:1;}
+  .anode.tbl{border-left-color:var(--violet-soft);flex:1;}
+  .anode.db{border-left-color:var(--blue);}
+  .anode.retrain{border-left-color:var(--green);}
+  .anode.deploy{border-left-color:var(--green);background:var(--panel2);}
+  .aflow{text-align:center;color:var(--violet-soft);font-size:1.2rem;line-height:1;padding:3px 0;}
+  .arow3{display:flex;gap:8px;}
+  .arow2{display:flex;gap:8px;align-items:center;}
+  .alink{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--violet);font-weight:700;white-space:nowrap;}
+
+  footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);text-align:center;}
+
+  .links{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+  .btn{flex:1;min-width:210px;border-radius:11px;padding:14px 18px;text-decoration:none;display:block;text-align:center;font-weight:700;font-size:1.1rem;transition:transform .1s,box-shadow .15s;}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(124,58,237,.18);}
+  .btn .u{display:block;font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:400;margin-top:4px;opacity:.85;}
+  .btn.primary{background:var(--violet);color:#fff;}
+  .btn.blue{background:var(--blue);color:#fff;}
+  .btn.green{background:var(--green);color:#fff;}
+
+  @media(max-width:900px){.cols{grid-template-columns:1fr;}.archi pre{font-size:.62rem;}.hero h1{font-size:1.8rem;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Projet <span>MLOps</span></h1>
+  <p class="tl">Prédiction médicale : on prédit si un patient est malade. Mais la réalité change, et <b>si</b> la prédiction n'est ni archivée ni comparée au réel, on ne saura jamais si le modèle a eu raison ni s'il se dégrade. Il faut un modèle <b>fiable et surveillé dans la durée</b>.</p>
+</header>
+
+<!-- GRILLE : ARCHITECTURE (gauche) + SOLUTION (droite) -->
+<div class="cols">
+
+<div class="col-archi">
+<h2 class="sectlab">L'<b>architecture</b></h2>
+<div class="archi-modern">
+
+  <div class="anode data">patients.csv<span>nettoyage · imputation · encodage</span></div>
+  <div class="aflow">&#8595;</div>
+  <div class="anode train">train.py + MLflow<span>compare, garde best_classifier.pkl</span></div>
+  <div class="aflow">&#8595;</div>
+  <div class="anode api">API FastAPI<span>/predict · /confirmer · /patient · /monitoring</span></div>
+  <div class="aflow">&#8595;</div>
+
+  <div class="arow3">
+    <div class="anode page">Infirmière<span>prédit + ID</span></div>
+    <div class="anode page">Médecin<span>ID + confirme</span></div>
+    <div class="anode page">Monitoring<span>prédit vs réel</span></div>
+  </div>
+  <div class="aflow">&#8595;</div>
+
+  <div class="arow2">
+    <div class="anode tbl">predictions<span>supposition IA</span></div>
+    <div class="alink">&#8596; ID &#8596;</div>
+    <div class="anode tbl">diagnostics_confirmes<span>vérité</span></div>
+  </div>
+  <div class="aflow">&#8595;</div>
+
+  <div class="anode db">PostgreSQL<span>stockage permanent</span></div>
+  <div class="aflow">&#8595;</div>
+  <div class="anode retrain">retrain.py<span>réentraîne sur la vérité</span></div>
+  <div class="aflow">&#8595;</div>
+  <div class="anode deploy">GitHub Actions &#8594; Render<span>nouveau .pkl, redéploiement</span></div>
+
+</div>
+</div><!-- fin col-archi -->
+
+<div class="col-sol">
+<h2 class="sectlab">La <b>solution</b> : 4 étapes</h2>
+<section class="steps-v">
+  <article class="step s1">
+    <div class="snum">01</div><div class="st">Entraînement</div>
+    <ul>
+      <li>pipeline MLOps complet</li>
+      <li>comparer plusieurs modèles candidats</li>
+      <li>garder le meilleur, tracé dans <b>MLflow</b></li>
+    </ul>
+  </article>
+  <article class="step s2">
+    <div class="snum">02</div><div class="st">Production</div>
+    <ul>
+      <li>prédiction archivée dans <b>PostgreSQL</b></li>
+      <li>comparée au vrai diagnostic du médecin</li>
+      <li><b>monitoring</b> : a-t-il toujours raison</li>
+      <li>MLflow suit la progression</li>
+    </ul>
+  </article>
+  <article class="step s3">
+    <div class="snum">03</div><div class="st">Réentraînement</div>
+    <ul>
+      <li><b>GitHub Actions</b> (cron 6 mois ou manuel)</li>
+      <li>retrain.py lit <b>diagnostics_confirmes</b></li>
+      <li>réentraîne, MLflow trace</li>
+      <li>nouveau .pkl commit sur GitHub</li>
+    </ul>
+  </article>
+  <article class="step s4">
+    <div class="snum">04</div><div class="st">CI/CD</div>
+    <ul>
+      <li>les <b>tests</b> se lancent</li>
+      <li>Render reconstruit l'<b>image Docker</b></li>
+      <li>redéploie l'API</li>
+      <li>le meilleur modèle est resélectionné</li>
+    </ul>
+  </article>
+</section>
+
+</div><!-- fin col-sol -->
+
+</div><!-- fin cols -->
+
+<h2 class="sectlab">Essayer le projet <b>en ligne</b></h2>
+<nav class="links">
+  <a class="btn primary" href="https://mlops-public.onrender.com/" target="_blank" rel="noopener">Page de création du dossier<span class="u">mlops-public.onrender.com</span></a>
+  <a class="btn blue" href="https://mlops-admin.onrender.com/" target="_blank" rel="noopener">Interface médecin<span class="u">mlops-admin.onrender.com</span></a>
+  <a class="btn green" href="https://mlops-monitoring.onrender.com/" target="_blank" rel="noopener">Monitoring<span class="u">mlops-monitoring.onrender.com</span></a>
+</nav>
+
+</body>
+</html>
